@@ -321,7 +321,8 @@
         rgba(255, 208, 138, 0.07);
     }
 
-    .choice-panel h3 {
+    .choice-panel h3,
+    #choiceArea > h3 {
       margin-bottom: 6px;
       color: #ffe1aa;
       font-size: 15px;
@@ -678,6 +679,101 @@
       text-align: center;
     }
 
+    .field-stat {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .field-stat-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field-stat-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .field-stat-head strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .field-stat-bar {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .field-stat-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, rgba(255, 208, 138, 0.72), rgba(127, 199, 255, 0.72));
+    }
+
+    .match-card {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 12px;
+      align-items: start;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .match-card:hover {
+      border-color: rgba(127, 199, 255, 0.35);
+      background: rgba(127, 199, 255, 0.06);
+    }
+
+    .match-avatar {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255, 208, 138, 0.35), rgba(127, 199, 255, 0.35));
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .match-card strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .match-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .match-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .persona-name {
+      margin-bottom: 8px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
     @media (max-width: 420px) {
       .shell {
         padding: 0;
@@ -712,20 +808,20 @@
       duration: "5分钟",
       ambianceTags: ["轻喜剧", "中等互动", "轻松深聊"],
       tendencyTags: ["夜间活跃", "慢热", "愿意深聊一点点"],
-      intro: "雨停在街灯下面，手机时间停在2:17。你抬头时，一间刚才还不存在的便利店亮起招牌，像在等一个还没睡的人。",
+      intro: "雨停在街灯下面，手机时间停在2:17。你抬头时，一间刚才还不存在的便利店亮起招牌，门缝里漏出一点暖光。",
       scenes: [
         {
           name: "门铃响了三次",
           narration: [
-            "雨里亮起的便利店，招牌像刚醒过来。",
-            "收银台没有店员，只有小票机慢慢吐出一张没有价格的小票。",
-            "小票上写着：输入了17次，删除了17次。请替一位陌生人，把没敢发出去的话带到天亮前。"
+            "雨刚停，这条街很安静，只有便利店还亮着。",
+            "收银台没有人，小票机自己吐出一张纸，上面没有价格。",
+            "写着：输入了17次，删除了17次。下面还有一行小字：请替一位陌生人，把没敢发出去的话带到天亮前。"
           ],
           route: "雨刚停，第一张小票还没被读完。",
           choices: [
-            choice("s1a", "先看小票任务，先别乱猜", "你把小票凑近暖光，下面还有一行灰色小字：其实我今天不是想聊天，我只是有点不想一个人待着。", { action: 2, rule: 2 }, "你有过打了很多字，最后又删掉的时候吗？"),
-            choice("s1b", "轻声叫店员，先确认有没有人在", "你的声音落进货架间，没有人回应，制冷机替你叹了口气，像替很多深夜的人叹过。", { relation: 2, safety: 1 }, "如果凌晨有个人听你说话，你第一句会说什么？"),
-            choice("s1c", "回头确认门还开着，安全感先到位", "门还虚掩着，雨味钻进来，你终于敢多看一眼。", { safety: 3 }, "你是那种进陌生地方会先看出口的人吗？")
+            choice("s1a", "先把小票看明白，别自己吓自己", "你把小票凑近暖光，下面还有一行灰色小字：其实我今天不是想聊天，我只是有点不想一个人待着。", { action: 2, rule: 2 }, "你有过字打好了，最后还是删掉的时候吗？"),
+            choice("s1b", "轻声叫店员，看有没有人在", "你的声音落进货架间，没人应。只有制冷机在嗡嗡响，像这家店也还没睡。", { relation: 2, safety: 1 }, "要是凌晨有个人愿意听你说话，你第一句会说什么？"),
+            choice("s1c", "先看门还开着，心里踏实点", "门还虚掩着，雨味钻进来。你确认还能出去，才慢慢敢多看一眼。", { safety: 3 }, "你进陌生地方，会下意识先看出口吗？")
           ]
         },
         {
@@ -737,9 +833,9 @@
           ],
           route: "小票没有价格，只有一段没送出去的话。",
           choices: [
-            choice("s2a", "读完整张小票", "你把每个字都看完，发现纸角画着一只很小的猫，旁边写着：别担心，我只是今天有点累。", { rule: 2, direct: 1 }, "你最想把哪一句“我没事”翻译成真话？"),
-            choice("s2b", "先去保温柜找热牛奶", "保温柜里只剩最后一瓶，瓶身温得刚好。你忽然理解，有些安慰不需要很会说话。", { action: 2, warmth: 1 }, "深夜便利店里，什么东西最像安慰？"),
-            choice("s2c", "把小票放回机器旁", "你不确定这是不是给你的任务。你只是先陪它待在原位，像陪一条没发出去的消息多等一会儿。", { safety: 2, reserved: 1 }, "你会把想说的话先存起来，还是趁夜晚说出去？")
+            choice("s2a", "读完整张小票", "你把每个字都看完，纸角画着一只很小的猫，旁边写着：别担心，我只是今天有点累。", { rule: 2, direct: 1 }, "你最想把哪句「我没事」翻译成真话？"),
+            choice("s2b", "先去保温柜找热牛奶", "保温柜里只剩最后一瓶，瓶身温得刚好。你握紧它，手心先暖了一点。", { action: 2, warmth: 1 }, "深夜便利店，什么东西最能让你松一口气？"),
+            choice("s2c", "把小票放回机器旁", "你不确定这是不是给你的事。你只是把小票放回机器边，陪它多待一会儿。", { safety: 2, reserved: 1 }, "想说的话，你更常先存起来，还是趁夜里发出去？")
           ]
         },
         {
@@ -747,69 +843,69 @@
           narration: [
             "门铃又响了三次。",
             "一个穿着湿外套的人站在门口，手里也攥着一张小票。",
-            "他说自己不是来找人的，只是每次心里堵得慌的时候，都会走进一家24小时便利店，假装自己只是来买水。"
+            "他说自己不是来找人的，只是心里堵得慌的时候，总习惯走进24小时便利店，假装只是来买水。"
           ],
           route: "门口来了第二个拿着小票的人。",
           choices: [
-            choice("s3a", "主动问他的小票写了什么", "他愣了一下，然后把小票摊开给你看：我不是不回消息，我只是怕一开口就显得太需要人。", { relation: 2, direct: 2 }, "你会害怕自己显得太需要别人吗？"),
-            choice("s3b", "先观察他的表情", "他没有害怕，只是很努力地装作没事，像很多人凌晨两点的朋友圈。", { rule: 1, reserved: 2 }, "你更常把难过发出来，还是藏起来？"),
-            choice("s3c", "把热牛奶递给他", "他接过牛奶，小声说：谢谢，我刚才只是想找个地方慢慢缓一缓。", { warmth: 3, relation: 1 }, "如果不知道怎么安慰人，你会先递点吃的吗？")
+            choice("s3a", "主动问他的小票写了什么", "他愣了一下，然后把小票摊开：我不是不回消息，我只是怕一开口就显得太需要人。", { relation: 2, direct: 2 }, "你会怕别人觉得你太需要人吗？"),
+            choice("s3b", "先观察他的表情", "他没躲，只是很努力地在装没事，像凌晨两点还亮着的朋友圈。", { rule: 1, reserved: 2 }, "难过的时候，你更常发出来还是藏起来？"),
+            choice("s3c", "把热牛奶递给他", "他接过牛奶，小声说：谢谢，我刚才只是想找个地方慢慢缓一缓。", { warmth: 3, relation: 1 }, "不会安慰人的时候，你会先递点吃的吗？")
           ]
         },
         {
           name: "草稿箱货架",
           narration: [
-            "零食货架尽头不是薯片，而是一排写着“未发送”的透明罐头。",
+            "零食货架尽头不是薯片，而是一排写着「未发送」的透明罐头。",
             "每个罐头里都浮着一句没发出去的话。有的字很用力，有的只剩半句。",
-            "标签上写着：请选择一罐，只看你今晚最想理解的那一种。"
+            "你伸手前停了一下。标签各不相同：怕打扰、怕认真、怕没人回、怕自己太敏感。"
           ],
           route: "你站在一排未发送消息罐头前。",
           choices: [
-            choice("s4a", "拿起写着“怕打扰”的那一罐", "罐头里浮着一句：我不是不想说，只是不知道你会不会接得住。", { reserved: 2, safety: 1 }, "你草稿箱里最常删掉的是哪种话？"),
-            choice("s4b", "先看每个罐头上的标签", "你看到很多标签：怕打扰、怕认真、怕没人回、怕自己太敏感。原来大家都不是一个人在删字。", { rule: 2, relation: 1 }, "你最常把哪种情绪藏进草稿箱？"),
-            choice("s4c", "先问他想不想打开自己的那一罐", "第二位访客看了很久，指向一罐写着“怕打扰”的消息。你没有替他打开，只是陪他认出了它。你刚把罐头放回去，收银台下传来一阵电流声。", { relation: 2, reserved: 1 }, "如果是朋友的草稿箱，你会先问TA要不要打开吗？")
+            choice("s4a", "拿起写着「怕打扰」的那一罐", "罐头里浮着一句：我不是不想说，只是不知道你会不会接得住。", { reserved: 2, safety: 1 }, "你草稿箱里，最常删掉的是哪种话？"),
+            choice("s4b", "先看每个罐头上的标签", "怕打扰、怕认真、怕没人回……原来删字这件事，不是只有你一个人在干。", { rule: 2, relation: 1 }, "你最常把哪种情绪先藏起来？"),
+            choice("s4c", "先问他想不想打开自己的那一罐", "他看了很久，指向一罐写着「怕打扰」的消息。你没替他打开，只是陪他认出来。刚放回去，收银台下传来一阵电流声。", { relation: 2, reserved: 1 }, "如果是朋友，你会先问TA要不要打开吗？")
           ]
         },
         {
           name: "收音机里的声音",
           narration: [
             "收银台下的旧收音机自己开了。",
-            "旋钮旁边的小灯一闪一闪，杂音里像是有人在等你把声音拧清楚。",
-            "女声播报：凌晨2点17分，有一条留言未送达。请听见的人，不要替别人决定，也不要替自己假装没事。"
+            "旋钮旁的小灯一闪一闪，杂音里像夹着一句没说完的话。",
+            "女声断断续续：凌晨2点17分……有人把话留在这里了……他好像也不是想被劝，只是不想继续装没事。"
           ],
           route: "旧收音机说，有一条留言未送达。",
           choices: [
-            choice("s5a", "调大音量", "杂音里浮出一句：我不是想打扰你，我只是希望有人知道我今天有点难。", { direct: 2, rule: 1 }, "如果只允许发一句深夜消息，你会发给谁？"),
-            choice("s5b", "关掉它", "便利店安静下来，你发现第二位访客松了一口气。有些话，也可以先停在这里。", { safety: 1, relation: 2 }, "有些话没听完，也算照顾人吗？"),
-            choice("s5c", "跟着哼那段旋律", "旋律很旧，却像有人在夜里给你留了一盏灯，告诉你不用马上变好。", { warmth: 2, reserved: 1 }, "你会被一段很老的旋律突然击中吗？")
+            choice("s5a", "调大音量", "杂音里浮出一句：我不是想打扰你，我只是希望有人知道我今天有点难。", { direct: 2, rule: 1 }, "如果只能发一句深夜消息，你会发给谁？"),
+            choice("s5b", "关掉它", "便利店安静下来。第二位访客肩膀松了一点，像终于不用一直听着。", { safety: 1, relation: 2 }, "有些话没听完，也算照顾人吗？"),
+            choice("s5c", "跟着哼那段旋律", "你跟着哼了两句，声音很轻，心里却松了一点。", { warmth: 2, reserved: 1 }, "你会被一段旧旋律突然戳中吗？")
           ]
         },
         {
           name: "该替谁带话",
           narration: [
             "小票机吐出第二张纸：话只能带给一个人。",
-            "纸上分成两栏：左边写着“等的人”，右边写着“写的人”。",
-            "第二位访客看着你，像是怕你选错，又像怕你选对。你忽然意识到，这间店收集的不是任务，是很多人打了又删的那一句。"
+            "纸上分成两栏：左边写着「等的人」，右边写着「写的人」。",
+            "第二位访客看着你，像是怕你选错，又像怕你选对。你忽然意识到，这间店收的不是任务，是很多人打了又删的那一句。"
           ],
           route: "第二张小票说，话只能带给一个人。",
           choices: [
-            choice("s6a", "带给等待的人", "小票机吐出一行新字：你选择先照顾那个还在等的人。", { relation: 2, warmth: 1 }, "你更心疼等待的人，还是没说出口的人？"),
-            choice("s6b", "带给写下小票的人", "小票机吐出一行新字：你选择把没说出口的话还给写下它的人。", { rule: 2, direct: 1 }, "一句话该先属于说的人，还是听的人？"),
-            choice("s6c", "先不替任何人决定", "小票机吐出一行新字：你选择先不替任何人做决定，让这句话再等一等。", { safety: 2, reserved: 1 }, "你会害怕替别人做决定吗？")
+            choice("s6a", "带给等待的人", "第二位访客点了点头，像是终于有人先看了还在等的那一边。", { relation: 2, warmth: 1 }, "你更心疼等待的人，还是没说出口的人？"),
+            choice("s6b", "带给写下小票的人", "小票机轻轻响了一声，纸角那点折痕，像是被抚平了一点。", { rule: 2, direct: 1 }, "一句话该先属于说的人，还是听的人？"),
+            choice("s6c", "先不替任何人决定", "那句话还留在机器边。第二位访客说：那就先别动它。", { safety: 2, reserved: 1 }, "你会怕替别人做决定吗？")
           ]
         },
         {
           name: "天快亮了",
           narration: [
             "窗外的雨彻底停了，天色开始发灰。",
-            "小票机安静下来，像在等你写最后一句。刚才你替那句话做过选择，现在它把问题轻轻推回你面前。",
-            "屏幕一样的纸面亮起来：那你呢？有没有一句，一直没好好对自己说的话？"
+            "小票机不响了，像是在等你自己写最后一句。",
+            "纸面亮起来：那你呢？有没有一句，一直没好好对自己说的话？"
           ],
           route: "天快亮了，你需要写下最后一句。",
           choices: [
-            choice("s7a", "写下：你已经撑得很好了", "纸面慢慢变暖，像有人终于把这句话原封不动还给你。", { warmth: 2, direct: 1 }, "你多久没认真夸过自己了？"),
-            choice("s7b", "写下：不想说话也没关系", "第二位访客低头笑了笑。原来沉默也可以被允许，不一定都是逃避。", { safety: 2, reserved: 1 }, "你会允许自己今晚不解释吗？"),
-            choice("s7c", "写下：明天再开始，也来得及", "便利店的灯轻轻亮了一下，像把天亮前最后一点力气递给你。", { action: 1, warmth: 2 }, "你最想把哪件事留到明天再开始？")
+            choice("s7a", "写下：你已经撑得很好了", "纸面有点潮，那句话印上去，居然没有显得矫情。", { warmth: 2, direct: 1 }, "你多久没认真夸过自己了？"),
+            choice("s7b", "写下：不想说话也没关系", "第二位访客低头笑了一下：不解释也行。", { safety: 2, reserved: 1 }, "你会允许自己今晚不解释吗？"),
+            choice("s7c", "写下：明天再开始，也来得及", "灯亮了一下。不算振作，就是没那么难熬了。", { action: 1, warmth: 2 }, "你最想把哪件事留到明天再开始？")
           ]
         },
         {
@@ -820,13 +916,168 @@
           ],
           route: "门终于重新打开，天亮了。",
           choices: [
-            choice("s8a", "留下名字", "你在小票背面写下名字。不是为了被谁找到，只是承认：今晚的你也来过。", { direct: 2, relation: 1 }, "如果故事会记住你，你会留下名字吗？"),
-            choice("s8b", "不留痕迹", "你把小票折好放进口袋，只带走一点便利店的暖光。不是所有好转，都要被别人看见。", { reserved: 2, safety: 1 }, "你做过不想让别人知道的好事吗？"),
-            choice("s8c", "约定下次睡不着就回来", "门铃轻轻晃了一下，像答应你：下次夜里有点难，也可以先找一盏灯。", { warmth: 2, action: 1 }, "如果下次又睡不着，你还会来这家便利店吗？")
+            choice("s8a", "留下名字", "你在小票背面写下名字。不是为了被谁找到，只是承认：今晚的你也来过。", { direct: 2, relation: 1 }, "如果这家店会记住你，你会留下名字吗？"),
+            choice("s8b", "不留痕迹", "你把小票折好放进口袋。不想让谁看见，但你知道自己好过一点了。", { reserved: 2, safety: 1 }, "你做过不想让别人知道的好事吗？"),
+            choice("s8c", "约定下次睡不着就回来", "门铃晃了一下，像这家店记得你还会来。", { warmth: 2, action: 1 }, "下次又睡不着，你还会来吗？")
           ]
         }
       ]
     };
+
+    const chatReplies = {
+      topic_s1a: [
+        "有。上周打了很长一段，最后还是全删了，就发了句晚安。",
+        "经常。怕说太多显得太需要人。",
+        "删得最多的是解释自己为什么难过那种，总觉得说不清。"
+      ],
+      topic_s1b: [
+        "我可能会先说：你还没睡吗？其实我也没睡。",
+        "大概会先问一句你还好吗，不敢直接说自己难受。",
+        "第一句往往是废话，比如今天雨好大，先找个由头。"
+      ],
+      topic_s1c: [
+        "会。进门先看门在哪，心里才踏实。",
+        "习惯先看出口和灯，不然整个人绷着。",
+        "陌生地方我会先站一会儿，确认能随时走。"
+      ],
+      topic_s2a: [
+        "其实我很累，不是没事。",
+        "我有点撑不住了，但不想让人担心。",
+        "我不是生气，只是今天真的很难过。"
+      ],
+      topic_s2b: [
+        "热牛奶，或者关东煮那种热气。",
+        "一瓶常温的水也行，主要是有人声的地方。",
+        "饭团。便宜，拿着就能吃，不用说话。"
+      ],
+      topic_s2c: [
+        "更常存着，夜里容易想太多，白天又怕打扰。",
+        "看心情，有时候夜里会突然发出去，发完又后悔。",
+        "大多先存草稿，能发出去的其实不多。"
+      ],
+      topic_s3a: [
+        "会。怕显得黏，怕对方觉得我有负担。",
+        "挺怕的，所以很多时候宁愿自己扛。",
+        "怕，所以经常把需要藏在一两句玩笑里。"
+      ],
+      topic_s3b: [
+        "藏起来居多，发出来要挑人挑时间。",
+        "难过时更想躲着，偶尔半夜会发仅自己可见。",
+        "看对象，对亲近的人会说一点，对外一般都藏。"
+      ],
+      topic_s3c: [
+        "会，递吃的比说安慰的话容易多了。",
+        "不太会安慰人，递杯热的至少不会说错。",
+        "经常，嘴巴笨的时候手先动了。"
+      ],
+      topic_s4a: [
+        "怕打扰的那种，还有太认真怕被笑话的。",
+        "多半是「我其实有点想你」这类，太直了不敢发。",
+        "解释自己为什么难过的，字越多越不敢发。"
+      ],
+      topic_s4b: [
+        "委屈吧，还有那种说不清的累。",
+        "脆弱会先藏起来，怕别人不知道怎么接。",
+        "需要感，怕让人觉得自己太难相处。"
+      ],
+      topic_s4c: [
+        "会，有些事得对方点头才敢碰。",
+        "会先问，不想好心办坏事。",
+        "会，尊重比着急更重要。"
+      ],
+      topic_s5a: [
+        "可能发给很久没见的朋友，或者某个特定的人。",
+        "发给懂我的人吧，不用解释太多。",
+        "有时候只想发给以前的自己，告诉他别硬撑。"
+      ],
+      topic_s5b: [
+        "算吧，有些人需要的是安静，不是答案。",
+        "我觉得算，陪在旁边有时候比说完更重要。",
+        "会，没听完就关掉，也可能是种体贴。"
+      ],
+      topic_s5c: [
+        "会，老歌一响整个人就回去了。",
+        "经常，某几句旋律像开关一样。",
+        "会，半夜听到更容易想起以前的事。"
+      ],
+      topic_s6a: [
+        "两边都心疼，但等待的人更让人难受一点。",
+        "没说出口的人，因为谁也不知道他憋了多久。",
+        "等待的人吧，干等着太折磨了。"
+      ],
+      topic_s6b: [
+        "先说的人需要勇气，听的人也需要准备好。",
+        "我觉得先属于说的人，被听见才算数。",
+        "看情况，有些话说出来就是为了让自己好过。"
+      ],
+      topic_s6c: [
+        "会，怕选错，怕好意变成压力。",
+        "挺怕的，所以很多事宁愿问清楚再动。",
+        "会，替别人做决定责任太大了。"
+      ],
+      topic_s7a: [
+        "好久了吧，夸自己总觉得怪怪的。",
+        "挺久的，习惯盯缺点，很少认真说自己不错。",
+        "上次认真夸自己，可能是很久以前了。"
+      ],
+      topic_s7b: [
+        "今晚想允许一下，不想每件事都解释清楚。",
+        "可以，有些夜晚不用交代全部。",
+        "想允许，沉默有时候也是答案。"
+      ],
+      topic_s7c: [
+        "回复消息，或者整理房间那种小事。",
+        "把难谈的话留到明天，今晚先睡。",
+        "做决定吧，今晚脑子转不动。"
+      ],
+      topic_s8a: [
+        "可能会留，不是为了被找到，是承认来过。",
+        "看心情，有时候想留，有时候只想悄悄走。",
+        "也许会留个小名，像给今晚做个记号。"
+      ],
+      topic_s8b: [
+        "有，帮过别人但不想让人知道，怕尴尬。",
+        "做过，好事说出来反而像炫耀。",
+        "有，悄悄做过一些，自己知道就够了。"
+      ],
+      topic_s8c: [
+        "会来，睡不着的时候这里挺合适。",
+        "应该会，比一个人躺着翻来覆去好一点。",
+        "会来，这家店记得人，不用装没事。"
+      ],
+      persona_opener_0: [
+        "删得最多的是解释自己为什么难过，字越多越不敢发。",
+        "「我其实有点想你」这类，打了又删好多次。",
+        "跟人说「我需要你」那种，总觉得太直了。"
+      ],
+      persona_opener_1: [
+        "想说给懂我的人，不用解释太多。",
+        "某个很久没见的朋友吧，又怕打扰。",
+        "其实想说给以前的自己，告诉他别硬撑。"
+      ],
+      persona_opener_2: [
+        "更常存着，夜里想太多，白天又怕打扰。",
+        "看心情，有时候夜里会突然发，发完又后悔。",
+        "大多先放草稿箱，能真发出去的没几句。"
+      ],
+      fallback_topic: [
+        "有，打了很多字又删掉，最后就剩一句晚安。",
+        "经常，怕说太多显得太需要人。",
+        "删得最多的是解释自己为什么难过那种。"
+      ]
+    };
+    chatReplies.match_default = chatReplies.persona_opener_0;
+    chatReplies.fallback = chatReplies.persona_opener_0;
+    chatReplies.default = [
+      "我也是，有些话只能夜里说。",
+      "懂，凌晨说的话往往最真。",
+      "嗯，今晚场里好像不止你我这样。"
+    ];
+
+    function pickChatReply(topic) {
+      const pool = chatReplies[topic.id] || chatReplies[topic.text] || chatReplies.default;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
 
     const labels = {
       action: "行动",
@@ -848,7 +1099,10 @@
       events: [],
       historyId: null,
       expandedRouteIndex: null,
-      soundOn: false
+      soundOn: true,
+      activeMatchId: null,
+      chatSent: false,
+      chatReply: null
     };
 
     function choice(id, label, feedback, scores, topic) {
@@ -938,7 +1192,22 @@
     function openTopic(topicId) {
       const topicPool = [...(state.reportTopics || []), ...state.topics];
       state.activeTopic = topicPool.find((topic) => topic.id === topicId) || topicPool[0];
+      state.chatSent = false;
+      state.chatReply = null;
       log("topic_card_open", { cardId: state.activeTopic.id });
+      state.view = "chat";
+      render();
+    }
+
+    function openMatchUser(matchId) {
+      state.activeMatchId = matchId;
+      state.chatSent = false;
+      state.chatReply = null;
+      log("match_user_open", { matchId });
+      if (!state.activeTopic) {
+        const report = getReport();
+        state.activeTopic = { id: "match_default", text: report.persona.openers[0] };
+      }
       state.view = "chat";
       render();
     }
@@ -954,13 +1223,26 @@
       state.activeTopic = null;
       state.historyId = null;
       state.expandedRouteIndex = null;
+      state.activeMatchId = null;
+      state.chatSent = false;
+      state.chatReply = null;
+      render();
+    }
+
+    function sendMessage() {
+      const report = getReport();
+      const topic = state.activeTopic || state.topics[0] || reportTopicsFallback(report);
+      state.chatReply = pickChatReply(topic);
+      state.chatSent = true;
+      log("match_message_send", { matchId: state.activeMatchId, topicId: topic.id });
+      log("match_message_reply", { matchId: state.activeMatchId, reply: state.chatReply });
       render();
     }
 
     function updateSoundToggle() {
       const button = document.getElementById("soundToggle");
       if (!button) return;
-      button.textContent = state.soundOn ? "声音开" : "声音关";
+      button.textContent = state.soundOn ? "声音 开" : "声音 关";
       button.classList.toggle("on", state.soundOn);
     }
 
@@ -1023,8 +1305,10 @@
         personaName: report.persona.name,
         personaLine: report.persona.line,
         selfTicket: report.persona.selfTicket,
-        matchName: report.match.name,
-        matchReason: report.match.reason,
+        matchName: report.matches[0]?.name || "",
+        matchReason: report.matches[0]?.reason || "",
+        matchedUsers: report.matches,
+        tonightCount: report.tonightField.count,
         route: [...state.route],
         topics: [
           ...report.persona.openers.map((text, index) => ({ id: `history_opener_${index}`, text, from: report.persona.name })),
@@ -1112,23 +1396,120 @@
       const sorted = Object.entries(state.scores).sort((a, b) => b[1] - a[1]);
       const top = sorted.slice(0, 3);
       const keywords = top.map(([key]) => {
-        if (key === "safety") return "稳稳的安全感型";
-        if (key === "relation") return "为陌生人停留的人";
-        if (key === "rule") return "先找规则的探索者";
-        if (key === "action") return "愿意先迈一步的人";
-        if (key === "warmth") return "会用行动照顾人";
-        if (key === "direct") return "把话说清楚的人";
-        return "含蓄的观察者";
+        if (key === "safety") return "进门会先看出口";
+        if (key === "relation") return "会先留意别人";
+        if (key === "rule") return "会先弄清楚";
+        if (key === "action") return "更愿意先试试";
+        if (key === "warmth") return "会先递点什么";
+        if (key === "direct") return "话会直接说";
+        return "夜里慢慢来";
       });
       const personaResult = buildPersona(top);
+      const matches = buildRealMatches(personaResult);
       return {
         top,
         keywords: keywords.length ? keywords : ["慢热的夜间观察者"],
         summary: buildSummary(top),
         axes: buildAxes(),
         persona: personaResult,
-        match: buildMatch(personaResult)
+        tonightField: buildTonightField(),
+        choiceStats: buildChoiceStats(),
+        matches,
+        match: matches[0]
       };
+    }
+
+    const choicePercents = {
+      s1a: 36, s1b: 29, s1c: 35,
+      s2a: 31, s2b: 41, s2c: 28,
+      s3a: 34, s3b: 26, s3c: 40,
+      s4a: 33, s4b: 37, s4c: 30,
+      s5a: 28, s5b: 32, s5c: 40,
+      s6a: 35, s6b: 31, s6c: 34,
+      s7a: 39, s7b: 33, s7c: 28,
+      s8a: 30, s8b: 38, s8c: 32
+    };
+
+    function buildTonightField() {
+      const hour = new Date().getHours();
+      const base = hour >= 0 && hour < 6 ? 286 : 214;
+      return {
+        count: base + state.choices.length * 17,
+        label: "人和你一起走进了这家便利店"
+      };
+    }
+
+    function buildChoiceStats() {
+      return state.choices.map((choiceId, index) => {
+        const scene = story.scenes[index];
+        const choice = scene?.choices.find((item) => item.id === choiceId);
+        if (!scene || !choice) return null;
+        return {
+          sceneName: scene.name,
+          choiceLabel: choice.label,
+          percent: choicePercents[choiceId] || 33
+        };
+      }).filter(Boolean).slice(-3);
+    }
+
+    function buildRealMatches(personaResult) {
+      const lastRoute = state.route[state.route.length - 1];
+      const overlap = lastRoute
+        ? `你们在「${lastRoute.sceneName}」做了差不多的选择`
+        : "你们今晚都走进了这家便利店";
+      const pools = {
+        "草稿箱囤货员": [
+          { id: "match_1", name: "失眠小羊", avatar: "羊", tags: ["慢热", "夜间活跃"], reason: "他草稿箱里也常堆着没发出去的话，不会催你一下说清楚。" },
+          { id: "match_2", name: "凌晨回信", avatar: "信", tags: ["愿意深聊", "话不多"], reason: "第二幕他也选了先慢一点，不急着靠近。" },
+          { id: "match_3", name: "雨停之后", avatar: "雨", tags: ["共情", "不打扰"], reason: "聊天习惯先听完，不会甩一堆建议过来。" }
+        ],
+        "进门先看出口的人": [
+          { id: "match_1", name: "门口见", avatar: "门", tags: ["有边界", "慢热"], reason: "他也要先确认安全，不会一上来追问你。" },
+          { id: "match_2", name: "夜行者K", avatar: "K", tags: ["谨慎靠近", "夜间活跃"], reason: "你们都会先观察一会儿，再决定要不要多说。" },
+          { id: "match_3", name: "半糖汽水", avatar: "汽", tags: ["不施压", "在场感"], reason: "聊起来不累，适合从很小的事开头。" }
+        ],
+        "凌晨直球派": [
+          { id: "match_1", name: "天亮前", avatar: "亮", tags: ["直接", "夜间活跃"], reason: "他也不喜欢一句话悬太久，聊起来会有推进感。" },
+          { id: "match_2", name: "未读消息", avatar: "读", tags: ["敢说", "能接住"], reason: "你们都不太怕把关键的话摆到台面上。" },
+          { id: "match_3", name: "便利店常客", avatar: "店", tags: ["行动派", "真诚"], reason: "适合从「你今晚吃了什么」这种小事聊起。" }
+        ],
+        "热牛奶递过去的人": [
+          { id: "match_1", name: "温牛奶", avatar: "温", tags: ["会照顾人", "慢热"], reason: "他也更习惯递杯热的，而不是讲大道理。" },
+          { id: "match_2", name: "夜里点灯", avatar: "灯", tags: ["温柔", "共情"], reason: "你们都会先注意到对方哪里不对劲。" },
+          { id: "match_3", name: "小票机旁", avatar: "票", tags: ["陪伴型", "夜间活跃"], reason: "氛围偏轻，不会一上来就很沉重。" }
+        ],
+        "边界感店员": [
+          { id: "match_1", name: "分寸感", avatar: "寸", tags: ["有边界", "温柔"], reason: "他会关心你，但不会替你拍板。" },
+          { id: "match_2", name: "不追问", avatar: "问", tags: ["慢热", "尊重感"], reason: "你们都不太想把关心变成压力。" },
+          { id: "match_3", name: "留一盏灯", avatar: "灯", tags: ["在场", "不打扰"], reason: "可以慢慢聊，不用急着解释全部。" }
+        ],
+        "留灯值班员": [
+          { id: "match_1", name: "守夜人", avatar: "夜", tags: ["慢热", "稳定"], reason: "他也不爱抢话，但会在旁边待着。" },
+          { id: "match_2", name: "便利店灯", avatar: "灯", tags: ["陪伴", "夜间活跃"], reason: "你们都不太急着靠近，却愿意多坐一会儿。" },
+          { id: "match_3", name: "天亮前见", avatar: "见", tags: ["安静", "共情"], reason: "聊起来不会逼你变得外向。" }
+        ]
+      };
+      return (pools[personaResult.name] || pools["留灯值班员"]).map((item) => ({
+        ...item,
+        overlap
+      }));
+    }
+
+    function renderMatchCard(match, withAction = true) {
+      return `
+        <button class="match-card" ${withAction ? `onclick="openMatchUser('${match.id}')"` : ""} type="button">
+          <div class="match-avatar">${escapeHtml(match.avatar)}</div>
+          <div>
+            <strong>${escapeHtml(match.name)}</strong>
+            <p>${escapeHtml(match.overlap)}</p>
+            <div class="tags" style="margin-top: 8px;">${tagHtml(match.tags)}</div>
+          </div>
+        </button>
+      `;
+    }
+
+    function getActiveMatch(report) {
+      return report.matches.find((item) => item.id === state.activeMatchId) || report.matches[0];
     }
 
     function buildChoiceInsight(choiceItem) {
@@ -1197,8 +1578,8 @@
           "草稿箱囤货员",
           "我不是没话说，我只是先把话放进草稿箱冷静一下。",
           "你常常把消息打好又删掉，不是不想靠近，是怕发出去之后收不回来。",
-          "你会反复想：现在说会不会太晚、太多、太打扰。可你也很希望有人能看懂你没发出的那部分。",
-          "今晚不用急着按发送键。先承认自己想被听见，就已经不是一件小事。"
+          "你会反复想：现在说会不会太晚、太多、太打扰。其实你也希望有人能看懂你没发出的那部分。",
+          "今晚不用急着按发送。先承认自己想被听见，就已经很不容易了。"
         );
       }
 
@@ -1226,9 +1607,9 @@
         return persona(
           "热牛奶递过去的人",
           "我可能讲不出大道理，但我会先问你要不要喝点热的。",
-          "在这次故事里，你很容易注意到别人哪里不对劲，也会用行动让对方舒服一点。",
-          "你不一定最会说漂亮话，但你会记得递纸、买热牛奶、陪人多坐一会儿。",
-          "别忘了，你也可以被照顾，不用一直当那个照顾大家的人。"
+          "你很容易注意到别人哪里不对劲，也会先递杯热的、多坐一会儿。",
+          "你不一定最会说漂亮话，但你会记得这些小动作。",
+          "你也可以被照顾，不用一直当那个照顾大家的人。"
         );
       }
 
@@ -1236,9 +1617,9 @@
         return persona(
           "边界感店员",
           "我会把灯开着，但不会追问你为什么这么晚才来。",
-          "你能看见别人的难处，也会提醒自己不要替对方做决定。",
-          "你关心人很有分寸：可以递水、可以陪着，但不会把关心变成压力。",
-          "这种不逼人的温柔很珍贵，半夜尤其需要。"
+          "你能看见别人的难处，也会提醒自己别越界。",
+          "你关心人有分寸：可以陪着，但不会把关心变成压力。",
+          "这种不逼人的温柔，半夜尤其管用。"
         );
       }
 
@@ -1246,7 +1627,7 @@
         "留灯值班员",
         "我不一定主动喊你，但你来了，我会把灯留着。",
         "你是慢热的，不会立刻把心事摊开，却愿意陪一件事等到天亮。",
-        "你常常安静地待在旁边，不抢话，也不轻易走开。有人难过时，你会用在场感陪TA撑过去。",
+        "你常常安静地待在旁边，不抢话，也不轻易走开。",
         "不用急着变得外向。能在旁边多坐一会儿，已经很难得。"
       );
     }
@@ -1259,44 +1640,15 @@
         relationHabit,
         selfTicket,
         openers: [
-          "如果把今晚删掉的一句话打印出来，你希望它被谁看见？",
-          "如果便利店能收留一句没发出去的话，你会放哪一句？",
-          "你会把没发出去的话留在草稿箱，还是找个时间说出来？"
+          "你草稿箱里删得最多的一句，是什么？",
+          "今晚那句没发出去的话，如果能说，你想说给谁？",
+          "你更常把话存着，还是趁着夜里发出去？"
         ]
       };
     }
 
     function buildMatch(personaResult) {
-      const matches = {
-        "草稿箱囤货员": {
-          name: "热牛奶递过去的人",
-          reason: "你会先把话收起来，TA 不会催你立刻说完，只会先问你要不要喝点热的。"
-        },
-        "进门先看出口的人": {
-          name: "留灯值班员",
-          reason: "你需要边界和出口，TA 不会堵住门口问个不停。"
-        },
-        "凌晨直球派": {
-          name: "边界感店员",
-          reason: "你愿意把话说清楚，TA 能接住你的直接，也会提醒你不用把自己逼太紧。"
-        },
-        "热牛奶递过去的人": {
-          name: "草稿箱囤货员",
-          reason: "你擅长给出温度，TA 刚好需要一个不会催促的人。"
-        },
-        "边界感店员": {
-          name: "凌晨直球派",
-          reason: "你守住分寸，TA 帮沉默的部分找到一句可以说出口的话。"
-        },
-        "留灯值班员": {
-          name: "进门先看出口的人",
-          reason: "你不急着靠近，TA 也需要一个能慢慢确认安全感的人。"
-        }
-      };
-      return matches[personaResult.name] || {
-        name: "热牛奶递过去的人",
-        reason: "你们都不急着把话说满，适合从一个很轻的问题开始聊。"
-      };
+      return buildRealMatches(personaResult)[0];
     }
 
     function buildSummary(top) {
@@ -1333,6 +1685,7 @@
       if (state.view === "intro") app.innerHTML = renderIntro();
       if (state.view === "playing") app.innerHTML = renderPlaying();
       if (state.view === "report") app.innerHTML = renderReport();
+      if (state.view === "match") app.innerHTML = renderMatch();
       if (state.view === "route") app.innerHTML = renderRouteDetail();
       if (state.view === "chat") app.innerHTML = renderChat();
       if (state.view === "history") app.innerHTML = renderHistory();
@@ -1351,9 +1704,9 @@
           <button id="soundToggle" class="sound-toggle" type="button" onclick="toggleSound()">声音关</button>
         </div>
         <section class="card hero">
-          <p class="eyebrow">故事中</p>
+          <p class="eyebrow">社交游乐园 · 今晚场</p>
           <h2>${story.title}</h2>
-          <p>${story.place}</p>
+          <p>睡不着的话，进来坐五分钟。故事走完，再看看今晚场里有没有聊得来的人。</p>
           <div class="tags">${tagHtml([...story.tendencyTags, ...story.ambianceTags])}</div>
         </section>
         <div class="meta">
@@ -1382,8 +1735,8 @@
           <p>这家便利店只在一些睡不着的夜里出现。它不卖东西，只收留那些打了又删、没来得及发出去的话。今晚，小票机把其中一句交到了你手里。</p>
         </section>
         <section class="card" style="margin-top: 14px;">
-          <h3>体验目标</h3>
-          <p>从这里开始，连续完成 8 个场景。每次选择都会记录到本次路线，并影响最终共鸣报告。结果只基于本次故事选择生成，不代表真实心理状态。</p>
+          <h3>玩完以后</h3>
+          <p>故事走完之后，会帮你挑出今晚场里聊起来不费劲的人。先把自己放进情绪里，再开口会自然很多。</p>
         </section>
         <button class="btn" style="margin-top: 16px;" onclick="playStory()">开始</button>
       `;
@@ -1395,7 +1748,10 @@
       return `
         <div class="topbar">
           <button class="btn small secondary" onclick="setView('home')">退出</button>
-          <span class="tag">Scene ${state.sceneIndex + 1}/8</span>
+          <div style="display: flex; gap: 8px;">
+            <span class="tag">${buildTonightField().count} 人同场</span>
+            <span class="tag">Scene ${state.sceneIndex + 1}/8</span>
+          </div>
         </div>
         <div class="progress"><span style="width: ${percent}%"></span></div>
         <section class="scene-copy">
@@ -1404,11 +1760,13 @@
           ${scene.narration.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
         </section>
         <div class="choice-panel">
-          <h3>你接下来怎么做？</h3>
-          <div id="choiceArea" class="choice-list" autocomplete="off" data-recommendations="off">
-            ${scene.choices.map((item) => `
-              <button class="choice" type="button" autocomplete="off" onclick="selectChoiceById('${item.id}')">${escapeHtml(item.label)}</button>
-            `).join("")}
+          <div id="choiceArea">
+            <h3>你接下来怎么做？</h3>
+            <div class="choice-list" autocomplete="off" data-recommendations="off">
+              ${scene.choices.map((item) => `
+                <button class="choice" type="button" autocomplete="off" onclick="selectChoiceById('${item.id}')">${escapeHtml(item.label)}</button>
+              `).join("")}
+            </div>
           </div>
         </div>
         ${state.route.length ? renderTrack() : ""}
@@ -1419,7 +1777,7 @@
       const choiceArea = document.getElementById("choiceArea");
       choiceArea.innerHTML = `
         <div class="feedback">${escapeHtml(choiceItem.feedback)}</div>
-        <button class="btn" onclick="nextScene()">${state.sceneIndex === story.scenes.length - 1 ? "查看共鸣报告" : "进入下一幕"}</button>
+        <button class="btn" onclick="nextScene()">${state.sceneIndex === story.scenes.length - 1 ? "看看今晚有谁" : "进入下一幕"}</button>
       `;
     }
 
@@ -1433,7 +1791,7 @@
       return `
         <section class="track card">
           <h3>你走过的夜路</h3>
-          <p>小灯会记住你经过的每一幕，点一下可以回看片段。</p>
+          <p>点一下，可以瞄一眼刚才走过的路。</p>
           ${renderRouteNodes(state.route, state.sceneIndex)}
         </section>
       `;
@@ -1441,9 +1799,8 @@
 
     function renderReport() {
       const report = getReport();
-      const max = Math.max(...Object.values(state.scores), 1);
       const topics = state.topics.length ? state.topics : [
-        { id: "fallback_topic", text: "你会替陌生人把一句话带到天亮前吗？", from: "通关默认" }
+        { id: "fallback_topic", text: "你有过打了很多字，最后又删掉的时候吗？", from: "通关默认" }
       ];
       const reportTopics = [
         ...report.persona.openers.map((text, index) => ({ id: `persona_opener_${index}`, text, from: report.persona.name })),
@@ -1451,70 +1808,50 @@
       ];
       state.reportTopics = reportTopics;
       if (!state.topics.length) state.topics = topics;
+      if (!state.activeMatchId) state.activeMatchId = report.matches[0]?.id;
       return `
         <div class="topbar">
           <button class="btn small secondary" onclick="setView('home')">首页</button>
-          <span class="tag">报告展示</span>
+          <span class="tag">今晚场</span>
         </div>
         <section class="card">
-          <p class="eyebrow">你的共鸣类型</p>
-          <h1>${escapeHtml(report.persona.name)}</h1>
+          <p class="eyebrow">今晚聊得来的人</p>
+          <h1>有 ${report.matches.length} 个人和你更容易聊开</h1>
+          <p style="font-size: 13px;">今晚场里 ${report.tonightField.count} 人一起走进了这家便利店</p>
+          <div class="match-grid">
+            ${report.matches.slice(0, 2).map((match) => renderMatchCard(match)).join("")}
+          </div>
+          <button class="btn secondary" style="margin-top: 12px;" onclick="setView('match')">再看看还有谁</button>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <p class="eyebrow">今晚的你</p>
+          <h2 class="persona-name">${escapeHtml(report.persona.name)}</h2>
           <p>${escapeHtml(report.persona.line)}</p>
           <div class="tags">${tagHtml(report.keywords)}</div>
-          <p style="margin-top: 14px;">${escapeHtml(report.summary)}</p>
-          <button class="btn secondary" style="margin-top: 12px;" onclick="setView('route')">查看本次路线</button>
-        </section>
-        <section class="card" style="margin-top: 14px;">
-          <h3>四组共鸣维度</h3>
-          <div class="axis-grid">
-            ${report.axes.map((axis) => `
-              <div class="axis-card">
-                <div class="axis-title">
-                  <strong>${escapeHtml(axis.name)}</strong>
-                </div>
-                <div class="axis-labels">
-                  <span>${escapeHtml(axis.leftLabel)}</span>
-                  <span>${escapeHtml(axis.rightLabel)}</span>
-                </div>
-                <div class="axis-track">
-                  <span class="axis-dot" style="left: ${axis.position}%"></span>
-                </div>
-                <p>${escapeHtml(axis.detail)}</p>
-              </div>
-            `).join("")}
-          </div>
-        </section>
-        <section class="card" style="margin-top: 14px;">
-          <h3>夜晚情绪模式</h3>
-          <p>${escapeHtml(report.persona.emotionMode)}</p>
-          <h3>你在关系里的习惯</h3>
-          <p>${escapeHtml(report.persona.relationHabit)}</p>
-          <div class="ticket">
+          <div class="ticket" style="margin-top: 14px;">
             <strong>今晚给自己的小票</strong><br />
             ${escapeHtml(report.persona.selfTicket)}
           </div>
         </section>
         <section class="card" style="margin-top: 14px;">
-          <h3>适合你的共鸣对象</h3>
-          <div class="axis-card">
-            <strong>${escapeHtml(report.match.name)}</strong>
-            ${escapeHtml(report.match.reason)}
-          </div>
-        </section>
-        <section class="card" style="margin-top: 14px;">
-          <h3>选择维度</h3>
-          <div class="report-score">
-            ${Object.entries(state.scores).map(([key, value]) => `
-              <div class="score-row">
-                <span>${labels[key] || key}</span>
-                <div class="score-bar"><span style="width: ${(value / max) * 100}%"></span></div>
+          <h3>今晚同场的人怎么选的</h3>
+          <p>你不是一个人在夜里做这些决定。</p>
+          <div class="field-stat">
+            ${report.choiceStats.map((item) => `
+              <div class="field-stat-row">
+                <div class="field-stat-head">
+                  <strong>${escapeHtml(item.sceneName)}</strong>
+                  <span>${item.percent}% 的人和你一样</span>
+                </div>
+                <p style="margin: 0 0 4px; font-size: 12px;">你选了「${escapeHtml(item.choiceLabel)}」</p>
+                <div class="field-stat-bar"><span style="width: ${item.percent}%"></span></div>
               </div>
             `).join("")}
           </div>
         </section>
         <section class="card" style="margin-top: 14px;">
-          <h3>聊天预览</h3>
-          <p>挑一句开场白，发给「${escapeHtml(report.match.name)}」试试。</p>
+          <h3>发一句开场白</h3>
+          <p>挑一句发给上面的人，比硬找话题自然。</p>
           <div class="topic-grid">
             ${reportTopics.slice(0, 3).map((topic) => `
               <button class="topic-card" onclick="openTopic('${topic.id}')">
@@ -1523,7 +1860,28 @@
             `).join("")}
           </div>
         </section>
-        <button class="btn" style="margin-top: 14px;" onclick="resetDemo()">重新体验</button>
+        <button class="btn" style="margin-top: 14px;" onclick="setView('match')">去认识今晚同场的人</button>
+        <button class="btn secondary" style="margin-top: 12px;" onclick="setView('route')">查看本次路线</button>
+        <button class="btn secondary" style="margin-top: 12px;" onclick="resetDemo()">再来一遍</button>
+      `;
+    }
+
+    function renderMatch() {
+      const report = getReport();
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('report')">返回</button>
+          <span class="tag">今晚同场</span>
+        </div>
+        <section class="card">
+          <h2>今晚和你同场的人</h2>
+          <p>今晚场里 ${report.tonightField.count} 人一起走进这家便利店。点进去，发一句试试。</p>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <div class="match-grid">
+            ${report.matches.map((match) => renderMatchCard(match)).join("")}
+          </div>
+        </section>
       `;
     }
 
@@ -1552,12 +1910,12 @@
         </div>
         <section class="card">
           <h2>我的剧场记录</h2>
-          <p>这里保存你完成过的故事报告。</p>
+          <p>你玩过的故事和那晚认识的人，都会留在这里。</p>
           ${records.length
             ? `<div class="topic-grid">${records.map((record) => `
                 <button class="topic-card" onclick="openHistory('${record.id}')">
                   <strong>${escapeHtml(formatRecordTime(record.completedAt))} · ${escapeHtml(record.storyTitle)}</strong><br />
-                  共鸣类型：${escapeHtml(record.personaName)}<br />
+                  同场 ${record.tonightCount || "—"} 人 · ${escapeHtml(record.matchName)}<br />
                   ${escapeHtml(record.selfTicket)}
                 </button>
               `).join("")}</div>`
@@ -1583,7 +1941,7 @@
         </div>
         <section class="card">
           <p class="eyebrow">${escapeHtml(record.place)}</p>
-          <h1>${escapeHtml(record.personaName)}</h1>
+          <h1>当晚同场 ${record.tonightCount || "—"} 人</h1>
           <p>${escapeHtml(record.personaLine)}</p>
           <div class="ticket">
             <strong>那晚给自己的小票</strong><br />
@@ -1591,45 +1949,60 @@
           </div>
         </section>
         <section class="card" style="margin-top: 14px;">
-          <h3>当时的路线</h3>
-          ${renderRouteNodes(record.route || [])}
+          <h3>那晚聊过的人</h3>
+          <div class="match-grid">
+            ${(record.matchedUsers || []).map((match) => renderMatchCard(match, false)).join("") || `
+              <div class="axis-card">
+                <strong>${escapeHtml(record.matchName)}</strong>
+                ${escapeHtml(record.matchReason)}
+              </div>
+            `}
+          </div>
         </section>
         <section class="card" style="margin-top: 14px;">
-          <h3>当时适合你的共鸣对象</h3>
-          <div class="axis-card">
-            <strong>${escapeHtml(record.matchName)}</strong>
-            ${escapeHtml(record.matchReason)}
-          </div>
+          <h3>当时的路线</h3>
+          ${renderRouteNodes(record.route || [])}
         </section>
       `;
     }
 
     function renderChat() {
-      const topic = state.activeTopic || state.topics[0];
       const report = getReport();
+      const match = getActiveMatch(report);
+      const topic = state.activeTopic || state.topics[0] || reportTopicsFallback(report);
       return `
         <div class="topbar">
-          <button class="btn small secondary" onclick="setView('report')">返回报告</button>
-          <span class="tag">聊天预览</span>
+          <button class="btn small secondary" onclick="setView('${state.activeMatchId ? "match" : "report"}')">返回</button>
+          <span class="tag">聊天</span>
         </div>
         <section class="card">
-          <p class="eyebrow">模拟聊天</p>
-          <h2>还没有发送给真实用户</h2>
-          <p>本 Demo 只验证话题卡进入聊天的情况，后续可接通私信。</p>
+          <p class="eyebrow">和 ${escapeHtml(match.name)} 聊聊</p>
+          <h2>${escapeHtml(match.name)}</h2>
+          <p>${escapeHtml(match.reason)}</p>
+          <div class="tags">${tagHtml(match.tags)}</div>
         </section>
         <div class="chat">
-          <div class="bubble bot">对方类型：${escapeHtml(report.match.name)}<br />${escapeHtml(report.match.reason)}</div>
+          <div class="bubble bot">${escapeHtml(match.overlap)}</div>
           <div class="bubble">${escapeHtml(topic.text)}</div>
-          <div class="bubble bot">这句开场白已经进入预览。真实链路不在本期 Demo 范围内。</div>
+          ${state.chatSent && state.chatReply
+            ? `<div class="bubble bot">${escapeHtml(state.chatReply)}</div>`
+            : ""}
         </div>
+        ${!state.chatSent ? `
+          <button class="btn" style="margin-top: 14px;" onclick="sendMessage()">发给 ${escapeHtml(match.name)}</button>
+        ` : ""}
       `;
+    }
+
+    function reportTopicsFallback(report) {
+      return { text: report.persona.openers[0], id: "fallback" };
     }
 
     function renderLogs() {
       return `
         <div class="topbar">
           <button class="btn small secondary" onclick="setView('${state.sceneIndex > 0 ? "playing" : "home"}')">返回</button>
-          <span class="tag">埋点日志</span>
+          <span class="tag">今晚足迹</span>
           <button class="btn small secondary" onclick="resetDemo()">重置</button>
         </div>
         <section class="card">
@@ -1639,12 +2012,21 @@
             ? `<ul class="log-list">${state.events.map((item) => `
                 <li><strong>${escapeHtml(item.event)}</strong> · ${escapeHtml(item.time)}<br />${escapeHtml(JSON.stringify(item))}</li>
               `).join("")}</ul>`
-            : `<div class="empty">还没有埋点事件。</div>`}
+            : `<div class="empty">还没有记录。</div>`}
         </section>
       `;
     }
 
     render();
+    startAmbience().then((started) => {
+      state.soundOn = started || state.soundOn;
+      updateSoundToggle();
+    });
+    document.addEventListener("pointerdown", () => {
+      if (state.soundOn && document.getElementById("backgroundMusic")?.paused) {
+        startAmbience();
+      }
+    }, { once: true });
   </script>
 </body>
 </html>
