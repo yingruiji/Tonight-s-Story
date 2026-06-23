@@ -40,9 +40,22 @@
       pointer-events: none;
       content: "";
       background:
-        linear-gradient(transparent 0 78%, rgba(255,255,255,0.08) 79%, transparent 80%),
-        repeating-linear-gradient(100deg, transparent 0 28px, rgba(255,255,255,0.04) 29px, transparent 31px);
-      opacity: 0.25;
+        repeating-linear-gradient(105deg, transparent 0 34px, rgba(255, 255, 255, 0.055) 35px, transparent 37px),
+        radial-gradient(circle at 50% 16%, rgba(255, 208, 138, 0.12), transparent 18rem);
+      opacity: 0.24;
+      animation: rainDrift 9s linear infinite;
+    }
+
+    body::after {
+      position: fixed;
+      inset: auto 0 0;
+      height: 32vh;
+      pointer-events: none;
+      content: "";
+      background:
+        linear-gradient(180deg, transparent, rgba(127, 199, 255, 0.08)),
+        repeating-linear-gradient(90deg, transparent 0 42px, rgba(255, 208, 138, 0.04) 43px, transparent 45px);
+      opacity: 0.45;
     }
 
     button {
@@ -79,6 +92,18 @@
       filter: blur(12px);
     }
 
+    .phone::after {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      background:
+        linear-gradient(115deg, transparent 0 42%, rgba(255, 255, 255, 0.055) 43%, transparent 47%),
+        radial-gradient(circle at 50% 12%, rgba(255, 208, 138, 0.12), transparent 12rem);
+      mix-blend-mode: screen;
+      opacity: 0.65;
+    }
+
     .screen {
       position: relative;
       z-index: 1;
@@ -92,6 +117,27 @@
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 20px;
+    }
+
+    .sound-toggle {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 20;
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 208, 138, 0.24);
+      border-radius: 999px;
+      background: rgba(14, 18, 29, 0.76);
+      color: #ffe1ae;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .sound-toggle.on {
+      border-color: rgba(127, 199, 255, 0.45);
+      color: #cce9ff;
+      box-shadow: 0 0 18px rgba(127, 199, 255, 0.15);
     }
 
     .eyebrow {
@@ -234,12 +280,22 @@
       transition: width 220ms ease;
     }
 
+    @keyframes rainDrift {
+      from {
+        transform: translate3d(0, -30px, 0);
+      }
+      to {
+        transform: translate3d(-18px, 36px, 0);
+      }
+    }
+
     .scene-copy {
       min-height: 210px;
       margin: 16px 0;
       padding: 22px;
       border-radius: 24px;
       background:
+        radial-gradient(circle at 12% 0%, rgba(127, 199, 255, 0.14), transparent 34%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
         rgba(14, 18, 29, 0.84);
       border: 1px solid var(--line);
@@ -255,14 +311,37 @@
       gap: 10px;
     }
 
+    .choice-panel {
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px solid rgba(255, 208, 138, 0.24);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(255, 208, 138, 0.2), transparent 38%),
+        rgba(255, 208, 138, 0.07);
+    }
+
+    .choice-panel h3 {
+      margin-bottom: 6px;
+      color: #ffe1aa;
+      font-size: 15px;
+    }
+
+    .choice-panel p {
+      margin-bottom: 12px;
+      color: #d8c8ad;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
     .choice {
       width: 100%;
       min-height: 58px;
       padding: 14px 15px;
-      border: 1px solid var(--line);
+      border: 1px solid rgba(255, 208, 138, 0.28);
       border-radius: 18px;
       text-align: left;
-      background: rgba(255, 255, 255, 0.075);
+      background: rgba(255, 255, 255, 0.09);
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
     }
 
@@ -301,31 +380,33 @@
       display: none;
     }
 
-    .route-nodes::before {
-      position: absolute;
-      top: 31px;
-      right: 16px;
-      left: 16px;
-      height: 2px;
-      content: "";
-      border-radius: 999px;
-      background:
-        linear-gradient(90deg, rgba(255, 208, 138, 0.18), rgba(127, 199, 255, 0.62), rgba(255, 208, 138, 0.18));
-      background-size: 200% 100%;
-      animation: routeGlow 4s linear infinite;
-    }
-
     .route-node {
       position: relative;
       z-index: 1;
       display: grid;
-      min-width: 84px;
+      min-width: 60px;
       justify-items: center;
-      gap: 8px;
+      gap: 7px;
+    }
+
+    .route-node:not(:last-child)::after {
+      position: absolute;
+      top: 13px;
+      left: 50%;
+      z-index: 0;
+      width: calc(100% + 8px);
+      height: 2px;
+      content: "";
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255, 208, 138, 0.2), rgba(127, 199, 255, 0.66), rgba(255, 208, 138, 0.2));
+      background-size: 200% 100%;
+      animation: routeGlow 4s linear infinite;
     }
 
     .route-dot {
       position: relative;
+      z-index: 1;
       display: grid;
       width: 28px;
       height: 28px;
@@ -348,32 +429,65 @@
     }
 
     .route-body {
-      width: 100%;
-      padding: 8px 8px 9px;
+      position: relative;
+      z-index: 1;
+      min-width: 52px;
+      padding: 6px 8px;
       border: 0;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.055);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.075);
       text-align: center;
     }
 
     .route-body strong {
       display: block;
-      margin-bottom: 4px;
       color: var(--text);
-      font-size: 12px;
+      font-size: 11px;
+      white-space: nowrap;
     }
 
     .route-body span {
+      display: none;
       color: var(--muted);
       font-size: 12px;
       line-height: 1.45;
     }
 
-    .route-summary {
+    .route-popover {
+      position: relative;
+      margin-top: 14px;
+      padding: 14px 15px;
+      border: 1px solid rgba(255, 208, 138, 0.2);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 14% 0%, rgba(255, 208, 138, 0.16), transparent 34%),
+        rgba(255, 255, 255, 0.065);
+      color: #d7ccb9;
+      line-height: 1.65;
+    }
+
+    .route-popover::before {
+      position: absolute;
+      top: -8px;
+      left: 34px;
+      width: 14px;
+      height: 14px;
+      content: "";
+      border-top: 1px solid rgba(255, 208, 138, 0.2);
+      border-left: 1px solid rgba(255, 208, 138, 0.2);
+      background: rgba(27, 30, 43, 0.98);
+      transform: rotate(45deg);
+    }
+
+    .route-popover strong {
       display: block;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .route-popover span {
+      display: block;
       color: #d7ccb9;
       text-align: left;
     }
@@ -587,6 +701,7 @@
       <div id="app" class="screen"></div>
     </section>
   </main>
+  <audio id="backgroundMusic" src="./background-music.mp3" loop preload="auto"></audio>
 
   <script>
     const story = {
@@ -616,9 +731,9 @@
         {
           name: "没有价格的小票",
           narration: [
-            "小票背面还有半句话：不要告诉那个人我哭过，就说我只是路过一家很亮的便利店。",
-            "货架尽头的保温柜轻轻亮了一下。热牛奶、关东煮、饭团都安静地排着队，像在等一些没被说出口的夜晚。",
-            "就在你看向保温柜时，门铃又响了。"
+            "小票背面还有半句话：别告诉TA我哭了，就说我只是去便利店买了点东西。",
+            "你盯着那行字看了一会儿。它不像任务，更像一个人撑不住时，给自己找的台阶。",
+            "货架尽头的保温柜还亮着，热牛奶、关东煮、饭团都在。你忽然觉得，今晚也许不用马上说对什么，先让自己暖一点也可以。"
           ],
           route: "小票没有价格，只有一段没送出去的话。",
           choices: [
@@ -732,7 +847,8 @@
       scores: {},
       events: [],
       historyId: null,
-      expandedRouteIndex: null
+      expandedRouteIndex: null,
+      soundOn: false
     };
 
     function choice(id, label, feedback, scores, topic) {
@@ -841,6 +957,44 @@
       render();
     }
 
+    function updateSoundToggle() {
+      const button = document.getElementById("soundToggle");
+      if (!button) return;
+      button.textContent = state.soundOn ? "声音开" : "声音关";
+      button.classList.toggle("on", state.soundOn);
+    }
+
+    async function toggleSound() {
+      if (state.soundOn) {
+        stopAmbience();
+        state.soundOn = false;
+        updateSoundToggle();
+        return;
+      }
+      const started = await startAmbience();
+      state.soundOn = started;
+      updateSoundToggle();
+    }
+
+    async function startAmbience() {
+      stopAmbience();
+      const music = document.getElementById("backgroundMusic");
+      if (!music) return false;
+      music.volume = 0.35;
+      try {
+        await music.play();
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function stopAmbience() {
+      const music = document.getElementById("backgroundMusic");
+      if (!music) return;
+      music.pause();
+    }
+
     function toggleRouteNode(index) {
       state.expandedRouteIndex = state.expandedRouteIndex === index ? null : index;
       render();
@@ -926,26 +1080,31 @@
           choiceLabel: "当前剧情"
         });
       }
+      const expandedNode = nodes.find((node) => Number(node.index) === state.expandedRouteIndex);
+      const expandedScene = expandedNode ? story.scenes[Number(expandedNode.index) - 1] : null;
+      const expandedSummary = expandedScene ? expandedScene.narration.slice(0, 3).join(" ") : "";
       return `
         <div class="route-nodes">
           ${nodes.map((node) => {
             const isCurrent = node.choiceLabel === "当前剧情";
             const nodeIndex = Number(node.index);
-            const scene = story.scenes[nodeIndex - 1];
-            const summary = scene ? scene.narration.slice(0, 2).join(" ") : "";
-            const expanded = state.expandedRouteIndex === nodeIndex;
             return `
               <div class="route-node">
                 <div class="route-dot ${isCurrent ? "current" : ""}">${isCurrent ? "◎" : node.index}</div>
                 <button class="route-body" onclick="toggleRouteNode(${nodeIndex})">
-                  <strong>${escapeHtml(node.sceneName)}</strong>
+                  <strong>${escapeHtml(isCurrent ? "当前" : `第${node.index}幕`)}</strong>
                   <span>${escapeHtml(isCurrent ? "当前剧情" : "已走过")}</span>
-                  ${expanded && summary ? `<span class="route-summary">${escapeHtml(summary)}</span>` : ""}
                 </button>
               </div>
             `;
           }).join("")}
         </div>
+        ${expandedNode && expandedSummary ? `
+          <div class="route-popover">
+            <strong>${escapeHtml(expandedNode.sceneName)}</strong>
+            <span>${escapeHtml(expandedSummary)}</span>
+          </div>
+        ` : ""}
       `;
     }
 
@@ -1035,59 +1194,59 @@
 
       if (scoreOf("reserved") >= 4 && scoreOf("direct") <= 2) {
         return persona(
-          "未发送消息收藏家",
-          "我不是不想说，只是怕一开口就收不回来。",
-          "你常常把想说的话先放进草稿箱，等自己没那么乱了，再决定要不要发出去。",
-          "你可能会担心打扰别人，也会在意对方会不会认真听完。",
-          "不用把每一句话都删掉。至少今晚，你可以承认：我确实有点想被听见。"
+          "草稿箱囤货员",
+          "我不是没话说，我只是先把话放进草稿箱冷静一下。",
+          "你常常把消息打好又删掉，不是不想靠近，是怕发出去之后收不回来。",
+          "你会反复想：现在说会不会太晚、太多、太打扰。可你也很希望有人能看懂你没发出的那部分。",
+          "今晚不用急着按发送键。先承认自己想被听见，就已经不是一件小事。"
         );
       }
 
       if (scoreOf("safety") >= 5) {
         return persona(
-          "出口确认型观察者",
-          "我会靠近，但我需要先知道自己能安全离开。",
-          "你不是没有好奇心，只是比起直接冲进去，你更需要先看清出口在哪。",
-          "你会先确认对方靠不靠谱，再把心里的话一点点说出来。",
-          "先保护自己不是冷漠。你是在用自己的节奏往前走。"
+          "进门先看出口的人",
+          "我可以进去看看，但我得先知道门还开着。",
+          "你不是胆小，也不是冷淡。只是到了陌生的地方，你会先确认自己有没有退路。",
+          "关系里也是这样：你会先观察对方靠不靠谱，再一点点把话说出来。",
+          "保护自己不丢人。你只是需要一个能让你慢慢放松的地方。"
         );
       }
 
       if (directAction >= warmthRelation && directAction >= reservedSafety) {
         return persona(
-          "天亮前递话人",
-          "有些话越拖越重，所以我想在天亮前把它说清楚。",
-          "你不喜欢让心事一直悬着。夜深的时候，你反而更想把答案说清楚。",
-          "你愿意主动推进，也能接受说完之后的结果。",
-          "不必每一次都当那个先开口的人，但你愿意说清楚，这一点很难得。"
+          "凌晨直球派",
+          "有些话拖到明天会更难开口，所以我想趁现在说清楚。",
+          "你不太受得了心事一直悬着。夜深的时候，你反而会想把那句话讲明白。",
+          "你愿意先推进，也能承担说完之后的安静或回应。",
+          "不必每次都当先开口的人。但你愿意把话说清楚，这很难得。"
         );
       }
 
       if (keys.includes("warmth") && keys.includes("relation")) {
         return persona(
-          "热牛奶型安慰者",
-          "我可能不会讲大道理，但我会给你买一瓶热牛奶。",
+          "热牛奶递过去的人",
+          "我可能讲不出大道理，但我会先问你要不要喝点热的。",
           "在这次故事里，你很容易注意到别人哪里不对劲，也会用行动让对方舒服一点。",
-          "你不一定最会表达，却常常能让人没那么紧绷。",
-          "别忘了，别人也可以照顾你。"
+          "你不一定最会说漂亮话，但你会记得递纸、买热牛奶、陪人多坐一会儿。",
+          "别忘了，你也可以被照顾，不用一直当那个照顾大家的人。"
         );
       }
 
       if (keys.includes("rule") && keys.includes("safety")) {
         return persona(
-          "有分寸的关心者",
-          "我会关心你，但不会替你决定你的人生。",
-          "你能共情别人的难处，也会提醒自己不要越过边界。",
-          "你很看重分寸：可以靠近，但不想把关心变成压力。",
-          "你关心人时留着余地，所以相处起来没那么累。"
+          "边界感店员",
+          "我会把灯开着，但不会追问你为什么这么晚才来。",
+          "你能看见别人的难处，也会提醒自己不要替对方做决定。",
+          "你关心人很有分寸：可以递水、可以陪着，但不会把关心变成压力。",
+          "这种不逼人的温柔很珍贵，半夜尤其需要。"
         );
       }
 
       return persona(
-        "凌晨守灯人",
-        "我不一定主动打扰谁，但如果你来了，我会把灯留着。",
-        "你是慢热的，不会立刻倾诉，却愿意陪一件事等到天亮。",
-        "你常常安静地待在旁边，不抢话，也不轻易走开。",
+        "留灯值班员",
+        "我不一定主动喊你，但你来了，我会把灯留着。",
+        "你是慢热的，不会立刻把心事摊开，却愿意陪一件事等到天亮。",
+        "你常常安静地待在旁边，不抢话，也不轻易走开。有人难过时，你会用在场感陪TA撑过去。",
         "不用急着变得外向。能在旁边多坐一会儿，已经很难得。"
       );
     }
@@ -1109,33 +1268,33 @@
 
     function buildMatch(personaResult) {
       const matches = {
-        "未发送消息收藏家": {
-          name: "热牛奶型安慰者",
-          reason: "你负责把没说出口的话慢慢拿出来，TA 不会催你立刻说完。"
+        "草稿箱囤货员": {
+          name: "热牛奶递过去的人",
+          reason: "你会先把话收起来，TA 不会催你立刻说完，只会先问你要不要喝点热的。"
         },
-        "出口确认型观察者": {
-          name: "凌晨守灯人",
-          reason: "你需要边界和出口，TA 不会催你马上解释。"
+        "进门先看出口的人": {
+          name: "留灯值班员",
+          reason: "你需要边界和出口，TA 不会堵住门口问个不停。"
         },
-        "天亮前递话人": {
-          name: "有分寸的关心者",
-          reason: "你愿意推进和表达，TA 能提醒你有些心事也可以慢慢来。"
+        "凌晨直球派": {
+          name: "边界感店员",
+          reason: "你愿意把话说清楚，TA 能接住你的直接，也会提醒你不用把自己逼太紧。"
         },
-        "热牛奶型安慰者": {
-          name: "未发送消息收藏家",
-          reason: "你擅长给出温度，TA 刚好需要一个不会催促的听众。"
+        "热牛奶递过去的人": {
+          name: "草稿箱囤货员",
+          reason: "你擅长给出温度，TA 刚好需要一个不会催促的人。"
         },
-        "有分寸的关心者": {
-          name: "天亮前递话人",
+        "边界感店员": {
+          name: "凌晨直球派",
           reason: "你守住分寸，TA 帮沉默的部分找到一句可以说出口的话。"
         },
-        "凌晨守灯人": {
-          name: "出口确认型观察者",
+        "留灯值班员": {
+          name: "进门先看出口的人",
           reason: "你不急着靠近，TA 也需要一个能慢慢确认安全感的人。"
         }
       };
       return matches[personaResult.name] || {
-        name: "热牛奶型安慰者",
+        name: "热牛奶递过去的人",
         reason: "你们都不急着把话说满，适合从一个很轻的问题开始聊。"
       };
     }
@@ -1179,6 +1338,7 @@
       if (state.view === "history") app.innerHTML = renderHistory();
       if (state.view === "historyDetail") app.innerHTML = renderHistoryDetail();
       if (state.view === "logs") app.innerHTML = renderLogs();
+      updateSoundToggle();
     }
 
     function renderHome() {
@@ -1188,6 +1348,7 @@
             <p class="eyebrow">Soul · 共鸣剧场 Demo</p>
             <h1>今晚故事</h1>
           </div>
+          <button id="soundToggle" class="sound-toggle" type="button" onclick="toggleSound()">声音关</button>
         </div>
         <section class="card hero">
           <p class="eyebrow">故事中</p>
@@ -1242,10 +1403,13 @@
           <h2>${scene.name}</h2>
           ${scene.narration.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
         </section>
-        <div id="choiceArea" class="choice-list" autocomplete="off" data-recommendations="off">
-          ${scene.choices.map((item) => `
-            <button class="choice" type="button" autocomplete="off" onclick="selectChoiceById('${item.id}')">${escapeHtml(item.label)}</button>
-          `).join("")}
+        <div class="choice-panel">
+          <h3>你接下来怎么做？</h3>
+          <div id="choiceArea" class="choice-list" autocomplete="off" data-recommendations="off">
+            ${scene.choices.map((item) => `
+              <button class="choice" type="button" autocomplete="off" onclick="selectChoiceById('${item.id}')">${escapeHtml(item.label)}</button>
+            `).join("")}
+          </div>
         </div>
         ${state.route.length ? renderTrack() : ""}
       `;
