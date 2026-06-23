@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>共鸣剧场 Demo - 凌晨2:17的小票</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0d1018;
+      --panel: rgba(18, 22, 33, 0.88);
+      --panel-2: rgba(255, 255, 255, 0.07);
+      --text: #f6efe4;
+      --muted: #b4a996;
+      --accent: #ffd08a;
+      --accent-2: #7fc7ff;
+      --danger: #ff9e9e;
+      --line: rgba(255, 255, 255, 0.13);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(127, 199, 255, 0.2), transparent 26rem),
+        radial-gradient(circle at 80% 28%, rgba(255, 208, 138, 0.18), transparent 22rem),
+        linear-gradient(135deg, #070912 0%, #141a26 48%, #0f111a 100%);
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      background:
+        linear-gradient(transparent 0 78%, rgba(255,255,255,0.08) 79%, transparent 80%),
+        repeating-linear-gradient(100deg, transparent 0 28px, rgba(255,255,255,0.04) 29px, transparent 31px);
+      opacity: 0.25;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      border: 0;
+    }
+
+    .shell {
+      width: min(440px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 14px 28px;
+    }
+
+    .phone {
+      position: relative;
+      min-height: calc(100vh - 36px);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(10, 13, 20, 0.82);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(14px);
+    }
+
+    .phone::before {
+      position: absolute;
+      inset: -20% -30% auto;
+      height: 360px;
+      content: "";
+      background: radial-gradient(circle, rgba(255, 208, 138, 0.24), transparent 62%);
+      filter: blur(12px);
+    }
+
+    .screen {
+      position: relative;
+      z-index: 1;
+      min-height: calc(100vh - 38px);
+      padding: 22px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 34px;
+      line-height: 1.06;
+      letter-spacing: -0.04em;
+    }
+
+    h2 {
+      margin-bottom: 8px;
+      font-size: 25px;
+      line-height: 1.16;
+      letter-spacing: -0.03em;
+    }
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 18px;
+      background: var(--panel);
+    }
+
+    .hero {
+      min-height: 245px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      margin: 22px 0;
+      background:
+        linear-gradient(180deg, rgba(10, 13, 20, 0.18), rgba(10, 13, 20, 0.9)),
+        radial-gradient(circle at 70% 28%, rgba(255, 208, 138, 0.46), transparent 12rem),
+        linear-gradient(145deg, #182536, #11131d);
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 0;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 10px;
+      border: 1px solid rgba(255, 208, 138, 0.23);
+      border-radius: 999px;
+      color: #ffe1ae;
+      background: rgba(255, 208, 138, 0.08);
+      font-size: 12px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .meta-item {
+      padding: 12px;
+      border-radius: 18px;
+      color: var(--muted);
+      background: var(--panel-2);
+      font-size: 12px;
+    }
+
+    .meta-item strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 52px;
+      padding: 13px 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #ffd08a, #ffb45c);
+      color: #241a10;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(255, 180, 92, 0.18);
+    }
+
+    .btn.secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      box-shadow: none;
+    }
+
+    .btn.small {
+      width: auto;
+      min-height: 38px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .progress {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 220ms ease;
+    }
+
+    .scene-copy {
+      min-height: 210px;
+      margin: 16px 0;
+      padding: 22px;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+        rgba(14, 18, 29, 0.84);
+      border: 1px solid var(--line);
+    }
+
+    .scene-copy p {
+      margin-bottom: 12px;
+      color: #eadfcc;
+    }
+
+    .choice-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .choice {
+      width: 100%;
+      min-height: 58px;
+      padding: 14px 15px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.075);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .choice:hover {
+      transform: translateY(-1px);
+      border-color: rgba(255, 208, 138, 0.55);
+      background: rgba(255, 208, 138, 0.1);
+    }
+
+    .feedback {
+      margin-top: 14px;
+      padding: 14px;
+      border-left: 3px solid var(--accent);
+      border-radius: 14px;
+      background: rgba(255, 208, 138, 0.08);
+      color: #f4dfbd;
+      line-height: 1.65;
+    }
+
+    .track {
+      margin-top: 18px;
+    }
+
+    .track-list, .log-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .track-list li, .log-list li {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .report-score {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .score-bar {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .score-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .axis-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .axis-card {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .axis-card strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--accent);
+      font-size: 13px;
+    }
+
+    .ticket {
+      margin-top: 12px;
+      padding: 16px;
+      border: 1px dashed rgba(255, 208, 138, 0.42);
+      border-radius: 18px;
+      background:
+        linear-gradient(135deg, rgba(255, 208, 138, 0.12), rgba(127, 199, 255, 0.07)),
+        rgba(255, 255, 255, 0.04);
+      color: #ffe5bd;
+      line-height: 1.7;
+    }
+
+    .topic-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .topic-card {
+      padding: 14px;
+      border: 1px solid rgba(127, 199, 255, 0.28);
+      border-radius: 18px;
+      background: rgba(127, 199, 255, 0.08);
+      text-align: left;
+      line-height: 1.55;
+    }
+
+    .chat {
+      display: grid;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .bubble {
+      max-width: 86%;
+      padding: 13px 15px;
+      border-radius: 18px 18px 4px 18px;
+      justify-self: end;
+      background: linear-gradient(135deg, #ffd08a, #ffb45c);
+      color: #23180f;
+      line-height: 1.55;
+    }
+
+    .bubble.bot {
+      justify-self: start;
+      border-radius: 18px 18px 18px 4px;
+      background: rgba(255, 255, 255, 0.09);
+      color: var(--text);
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .row .btn {
+      flex: 1;
+    }
+
+    .empty {
+      padding: 12px;
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 420px) {
+      .shell {
+        padding: 0;
+      }
+
+      .phone {
+        min-height: 100vh;
+        border: 0;
+        border-radius: 0;
+      }
+
+      .screen {
+        min-height: 100vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="phone">
+      <div id="app" class="screen"></div>
+    </section>
+  </main>
+
+  <script>
+    const story = {
+      id: "store_0217",
+      title: "凌晨2:17的小票",
+      place: "不打烊便利店",
+      mode: "雨夜进店",
+      duration: "5分钟",
+      ambianceTags: ["轻喜剧", "中等互动", "轻松深聊"],
+      tendencyTags: ["夜间活跃", "慢热", "愿意深聊一点点"],
+      intro: "雨停在街灯下面，手机时间停在2:17。你抬头时，一间刚才还不存在的便利店亮起招牌，像在等一个还没睡的人。",
+      scenes: [
+        {
+          name: "门铃响了三次",
+          narration: [
+            "雨里亮起的便利店，招牌像刚醒过来。",
+            "收银台没有店员，只有小票机慢慢吐出一张没有价格的小票。",
+            "小票上写着：输入了17次，删除了17次。请替一位陌生人，把没敢发出去的话带到天亮前。"
+          ],
+          route: "雨刚停，第一张小票还没被读完。",
+          choices: [
+            choice("s1a", "先看小票任务，先别乱猜", "你把小票凑近暖光，下面还有一行灰色小字：其实我今天不是想聊天，我只是有点不想一个人待着。", { action: 2, rule: 2 }, "你有过打了很多字，最后又删掉的时候吗？"),
+            choice("s1b", "轻声叫店员，先确认有没有人在", "你的声音落进货架间，没有人回应，制冷机替你叹了口气，像替很多深夜的人叹过。", { relation: 2, safety: 1 }, "如果凌晨有个人听你说话，你第一句会说什么？"),
+            choice("s1c", "回头确认门还开着，安全感先到位", "门还虚掩着，雨味钻进来，你终于敢多看一眼。", { safety: 3 }, "你是那种进陌生地方会先看出口的人吗？")
+          ]
+        },
+        {
+          name: "没有价格的小票",
+          narration: [
+            "小票背面还有半句话：不要告诉他我哭过，就说我只是路过一家很亮的便利店。",
+            "货架尽头的保温柜轻轻亮了一下。热牛奶、关东煮、饭团都安静地排着队，像在等一些没被说出口的夜晚。"
+          ],
+          route: "小票没有价格，只有一段没送出去的话。",
+          choices: [
+            choice("s2a", "读完整张小票", "你把每个字都看完，发现纸角画着一只很小的猫，旁边写着：别担心，我只是今天有点累。", { rule: 2, direct: 1 }, "你最想把哪一句“我没事”翻译成真话？"),
+            choice("s2b", "先去保温柜找热牛奶", "保温柜里只剩最后一瓶，瓶身温得刚好。你忽然理解，有些安慰不需要很会说话。", { action: 2, warmth: 1 }, "深夜便利店里，什么东西最像安慰？"),
+            choice("s2c", "把小票放回机器旁", "你不确定这是不是给你的任务。你只是先陪它待在原位，像陪一条没发出去的消息多等一会儿。", { safety: 2, reserved: 1 }, "你会把想说的话先存起来，还是趁夜晚说出去？")
+          ]
+        },
+        {
+          name: "第二位访客",
+          narration: [
+            "门铃又响了三次。",
+            "一个穿着湿外套的人站在门口，手里也攥着一张小票。",
+            "他说自己不是来找人的，只是每次情绪太满的时候，都会走进一家24小时便利店，假装自己只是来买水。"
+          ],
+          route: "门口来了第二个拿着小票的人。",
+          choices: [
+            choice("s3a", "主动问他的小票写了什么", "他愣了一下，然后把小票摊开给你看：我不是不回消息，我只是怕一开口就显得太需要人。", { relation: 2, direct: 2 }, "你会害怕自己显得太需要别人吗？"),
+            choice("s3b", "先观察他的表情", "他没有害怕，只是很努力地装作没事，像很多人凌晨两点的朋友圈。", { rule: 1, reserved: 2 }, "你更常把难过发出来，还是藏起来？"),
+            choice("s3c", "把热牛奶递给他", "他接过牛奶，小声说：谢谢，我刚才只是想找个地方慢慢缓一缓。", { warmth: 3, relation: 1 }, "如果不知道怎么安慰人，你会先递点吃的吗？")
+          ]
+        },
+        {
+          name: "草稿箱货架",
+          narration: [
+            "零食货架尽头不是薯片，而是一排写着“未发送”的透明罐头。",
+            "每个罐头里都浮着一句没发出去的话。有的字很用力，有的只剩半句。",
+            "标签上写着：请选择一罐，只看你今晚最想理解的那一种。"
+          ],
+          route: "你站在一排未发送消息罐头前。",
+          choices: [
+            choice("s4a", "拿起最像自己的那一罐", "罐头里浮着一句：我不是不想说，只是不知道你会不会接得住。", { reserved: 2, safety: 1 }, "如果你的草稿箱会发光，最亮的是哪一句？"),
+            choice("s4b", "先看别人留下的标签", "你看到很多标签：怕打扰、怕认真、怕没人回、怕自己太敏感。原来大家都不是一个人在删字。", { rule: 2, relation: 1 }, "你最常把哪种情绪藏进草稿箱？"),
+            choice("s4c", "不打开，先问他会选哪一罐", "第二位访客看了很久，指向一罐写着“怕打扰”的消息。你没有替他打开，只是陪他认出了它。", { relation: 2, reserved: 1 }, "你会把选择权交还给和秘密有关的人吗？")
+          ]
+        },
+        {
+          name: "收音机里的声音",
+          narration: [
+            "收银台下的旧收音机自己开了。",
+            "女声播报：凌晨2点17分，有一条留言未送达。请听见的人，不要替别人原谅，也不要替自己假装没事。"
+          ],
+          route: "旧收音机说，有一条留言未送达。",
+          choices: [
+            choice("s5a", "调大音量", "杂音里浮出一句：我不是想打扰你，我只是希望有人知道我今天有点难。", { direct: 2, rule: 1 }, "如果只允许发一句深夜消息，你会发给谁？"),
+            choice("s5b", "关掉它", "便利店安静下来，你发现第二位访客松了一口气。不是每一句话都必须马上被听见。", { safety: 1, relation: 2 }, "有些话没听完，也算一种温柔吗？"),
+            choice("s5c", "跟着哼那段旋律", "旋律很旧，却像有人在夜里给你留了一盏灯，告诉你不用马上变好。", { warmth: 2, reserved: 1 }, "你会被一段很老的旋律突然击中吗？")
+          ]
+        },
+        {
+          name: "该替谁带话",
+          narration: [
+            "小票机吐出第二张纸：话只能带给一个人。",
+            "第二位访客看着你，像是怕你选错，又像怕你选对。你忽然意识到，这间店收集的不是任务，是很多人打了又删的那一句。"
+          ],
+          route: "第二张小票说，话只能带给一个人。",
+          choices: [
+            choice("s6a", "带给等待的人", "你想，等了很久的人，至少该知道自己没有被彻底忘掉。小票机把你的选择折进最后一张纸。", { relation: 2, warmth: 1 }, "你更心疼等待的人，还是没说出口的人？"),
+            choice("s6b", "带给写下小票的人", "你想，没说出口的话，也许先该回到写下它的人手里：你也可以承认自己需要人。小票机把你的选择折进最后一张纸。", { rule: 2, direct: 1 }, "一句话该先属于说的人，还是听的人？"),
+            choice("s6c", "先不替任何人决定", "你把两张小票并排放好。也许不是所有深夜心事，都需要立刻被处理。小票机把你的停顿也折进最后一张纸。", { safety: 2, reserved: 1 }, "你会害怕替别人做决定吗？")
+          ]
+        },
+        {
+          name: "天快亮了",
+          narration: [
+            "窗外的雨彻底停了，天色开始发灰。",
+            "小票机安静下来，像在等你写最后一句。刚才你替那句话做过选择，现在它把问题轻轻推回你面前。",
+            "屏幕一样的纸面亮起来：那你呢？有没有一句，一直没好好对自己说的话？"
+          ],
+          route: "天快亮了，你需要写下最后一句。",
+          choices: [
+            choice("s7a", "写下：你已经撑得很好了", "纸面慢慢变暖，像有人终于把这句话原封不动还给你。", { warmth: 2, direct: 1 }, "你多久没认真夸过自己了？"),
+            choice("s7b", "写下：不想说话也没关系", "第二位访客低头笑了笑。原来沉默也可以被允许，不一定都是逃避。", { safety: 2, reserved: 1 }, "你会允许自己今晚不解释吗？"),
+            choice("s7c", "写下：明天再开始，也来得及", "便利店的灯轻轻亮了一下，像把天亮前最后一点力气递给你。", { action: 1, warmth: 2 }, "你最想把哪件事留到明天再开始？")
+          ]
+        },
+        {
+          name: "门铃第四次",
+          narration: [
+            "门铃响了第四次。这一次，是清晨的风把门推开。",
+            "便利店的招牌慢慢暗下去，小票机吐出最后一行：谢谢你把那句话陪到天亮。"
+          ],
+          route: "门终于重新打开，天亮了。",
+          choices: [
+            choice("s8a", "留下名字", "你在小票背面写下名字。不是为了被谁找到，只是承认：今晚的你也来过。", { direct: 2, relation: 1 }, "如果故事会记住你，你会留下名字吗？"),
+            choice("s8b", "不留痕迹", "你把小票折好放进口袋，只带走一点便利店的暖光。不是所有好转，都要被别人看见。", { reserved: 2, safety: 1 }, "你做过不想让别人知道的好事吗？"),
+            choice("s8c", "约定如果再下雨就回来", "门铃轻轻晃了一下，像答应你：下次夜里有点难，也可以先找一盏灯。", { warmth: 2, action: 1 }, "你会和一个地方做约定吗？")
+          ]
+        }
+      ]
+    };
+
+    const labels = {
+      action: "行动",
+      rule: "规则",
+      relation: "关系",
+      safety: "安全感",
+      warmth: "温度",
+      direct: "直接",
+      reserved: "含蓄"
+    };
+
+    const state = {
+      view: "home",
+      sceneIndex: 0,
+      choices: [],
+      route: [],
+      topics: [],
+      scores: {},
+      events: []
+    };
+
+    function choice(id, label, feedback, scores, topic) {
+      return { id, label, feedback, scores, topic };
+    }
+
+    function log(event, data = {}) {
+      state.events.push({
+        event,
+        time: new Date().toLocaleTimeString("zh-CN", { hour12: false }),
+        ...data
+      });
+    }
+
+    function addScores(scores) {
+      Object.entries(scores).forEach(([key, value]) => {
+        state.scores[key] = (state.scores[key] || 0) + value;
+      });
+    }
+
+    function setView(view) {
+      state.view = view;
+      render();
+    }
+
+    function startStory() {
+      state.view = "intro";
+      log("theater_enter", { storyId: story.id });
+      render();
+    }
+
+    function playStory() {
+      state.view = "playing";
+      state.sceneIndex = 0;
+      state.choices = [];
+      state.route = [];
+      state.topics = [];
+      state.scores = {};
+      state.events = state.events.filter((item) => item.event === "theater_enter");
+      log("story_start", { storyId: story.id });
+      render();
+    }
+
+    function selectChoice(choiceItem) {
+      const scene = story.scenes[state.sceneIndex];
+      state.choices.push(choiceItem.id);
+      state.route.push(`${state.sceneIndex + 1}. ${scene.name}：${choiceItem.label}`);
+      addScores(choiceItem.scores);
+      log("scene_complete", {
+        storyId: story.id,
+        sceneIndex: state.sceneIndex + 1,
+        choiceId: choiceItem.id
+      });
+
+      if (choiceItem.topic && state.topics.length < 5) {
+        const topic = {
+          id: `topic_${choiceItem.id}`,
+          text: choiceItem.topic,
+          from: scene.name
+        };
+        state.topics.push(topic);
+        log("topic_card_get", { storyId: story.id, sceneIndex: state.sceneIndex + 1, cardId: topic.id });
+      }
+
+      renderFeedback(choiceItem);
+    }
+
+    function nextScene() {
+      if (state.sceneIndex >= story.scenes.length - 1) {
+        state.view = "report";
+        log("report_show", {
+          storyId: story.id,
+          personalityTags: getReport().keywords.join("/"),
+          emotionTags: "治愈/微怅然"
+        });
+      } else {
+        state.sceneIndex += 1;
+      }
+      render();
+    }
+
+    function openTopic(topicId) {
+      const topicPool = [...(state.reportTopics || []), ...state.topics];
+      state.activeTopic = topicPool.find((topic) => topic.id === topicId) || topicPool[0];
+      log("topic_card_open", { cardId: state.activeTopic.id });
+      state.view = "chat";
+      render();
+    }
+
+    function resetDemo() {
+      state.view = "home";
+      state.sceneIndex = 0;
+      state.choices = [];
+      state.route = [];
+      state.topics = [];
+      state.scores = {};
+      state.events = [];
+      state.activeTopic = null;
+      render();
+    }
+
+    function getReport() {
+      const sorted = Object.entries(state.scores).sort((a, b) => b[1] - a[1]);
+      const top = sorted.slice(0, 3);
+      const keywords = top.map(([key]) => {
+        if (key === "safety") return "稳稳的安全感型";
+        if (key === "relation") return "为陌生人停留的人";
+        if (key === "rule") return "先找规则的探索者";
+        if (key === "action") return "愿意先迈一步的人";
+        if (key === "warmth") return "把温柔藏在动作里";
+        if (key === "direct") return "把话说清楚的人";
+        return "含蓄的观察者";
+      });
+      const personaResult = buildPersona(top);
+      return {
+        top,
+        keywords: keywords.length ? keywords : ["慢热的夜间观察者"],
+        summary: buildSummary(top),
+        axes: buildAxes(),
+        persona: personaResult,
+        match: buildMatch(personaResult)
+      };
+    }
+
+    function buildChoiceInsight(choiceItem) {
+      const scores = choiceItem.scores || {};
+      const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const phrases = {
+        safety: "确认安全",
+        relation: "先看见人",
+        warmth: "用行动安慰",
+        rule: "先理解规则",
+        direct: "把话说清楚",
+        reserved: "先把情绪收好",
+        action: "先迈一步"
+      };
+      const details = {
+        safety: "你会先确认边界，再靠近未知。",
+        relation: "你会先感受对方，而不是只处理任务。",
+        warmth: "你不急着解释，更愿意先给一点温度。",
+        rule: "你会先看懂规则，再决定怎么投入。",
+        direct: "你倾向让重要的话有一个明确落点。",
+        reserved: "你会先让情绪安静下来，再决定要不要说。",
+        action: "你愿意先推动故事，让答案在行动里出现。"
+      };
+      const top = sorted.filter(([, value]) => value > 0).slice(0, 2);
+      if (!top.length) return "你用自己的节奏处理这个夜晚。";
+      const names = top.map(([key]) => phrases[key] || labels[key] || key).join(" + ");
+      const explanation = top.map(([key]) => details[key]).filter(Boolean).join("");
+      return `${names}：${explanation}`;
+    }
+
+    function scoreOf(key) {
+      return state.scores[key] || 0;
+    }
+
+    function buildAxes() {
+      const approachPeople = scoreOf("relation") >= scoreOf("rule");
+      const expressionDirect = scoreOf("direct") >= scoreOf("reserved");
+      const safetyControl = scoreOf("safety") >= scoreOf("action");
+      const repairDeliver = scoreOf("direct") + scoreOf("action") >= scoreOf("warmth") + scoreOf("reserved");
+
+      return [
+        {
+          name: "靠近方式",
+          result: approachPeople ? "先靠近人" : "先确认规则",
+          detail: approachPeople ? "你会先感受对方需不需要被接住。" : "你会先弄清边界，再决定要不要靠近。"
+        },
+        {
+          name: "表达方式",
+          result: expressionDirect ? "把话说出" : "先留在心里",
+          detail: expressionDirect ? "你倾向把关键的话放到台面上。" : "你更习惯先消化情绪，再决定要不要说。"
+        },
+        {
+          name: "安全感来源",
+          result: safetyControl ? "确认出口" : "先迈一步",
+          detail: safetyControl ? "未知里，你需要知道自己随时可以退回去。" : "未知里，你会边走边找答案。"
+        },
+        {
+          name: "修复方式",
+          result: repairDeliver ? "把话送达" : "允许放下",
+          detail: repairDeliver ? "你相信有些话说出口后，心事才有落点。" : "你相信不是每句话都要被追问到底。"
+        }
+      ];
+    }
+
+    function buildPersona(top) {
+      const keys = top.map(([key]) => key);
+      const warmthRelation = scoreOf("warmth") + scoreOf("relation");
+      const directAction = scoreOf("direct") + scoreOf("action");
+      const reservedSafety = scoreOf("reserved") + scoreOf("safety");
+
+      if (scoreOf("reserved") >= 4 && scoreOf("direct") <= 2) {
+        return persona(
+          "未发送消息收藏家",
+          "我不是不想说，只是怕一开口就太认真。",
+          "你常常把情绪先放进草稿箱，等它没那么烫了，再决定要不要发出去。",
+          "你在关系里可能会担心打扰别人，也会在意自己的认真有没有被好好接住。",
+          "不用把每一句话都删掉。至少今晚，你可以承认：我确实有点想被听见。"
+        );
+      }
+
+      if (scoreOf("safety") >= 5) {
+        return persona(
+          "出口确认型观察者",
+          "我会靠近，但我需要先知道自己能安全离开。",
+          "你的夜晚不是没有好奇心，只是比起冲进去，你更需要一个能退回来的地方。",
+          "你会先确认对方是否可靠，再把真实情绪慢慢交出去。",
+          "先保护自己不是冷漠。你已经在用自己的节奏靠近世界。"
+        );
+      }
+
+      if (directAction >= warmthRelation && directAction >= reservedSafety) {
+        return persona(
+          "天亮前递话人",
+          "有些话越拖越重，所以我想在天亮前给它一个去处。",
+          "你不喜欢让心事一直悬着。夜深的时候，你反而更想把答案说清楚。",
+          "你在关系里愿意推进，也愿意承担说出口之后的重量。",
+          "不必每一次都当那个先开口的人，但你愿意诚实，这很珍贵。"
+        );
+      }
+
+      if (keys.includes("warmth") && keys.includes("relation")) {
+        return persona(
+          "热牛奶型安慰者",
+          "我可能不会讲大道理，但我会递给你一件温热的小事。",
+          "在这次故事里，你的夜晚情绪会被别人牵动，也很擅长用行动让对方安心。",
+          "你在关系里不一定最会表达，却常常是那个让人放松下来的人。",
+          "别忘了，你也可以是被照顾的那个人。"
+        );
+      }
+
+      if (keys.includes("rule") && keys.includes("safety")) {
+        return persona(
+          "温柔边界感玩家",
+          "我会关心你，但不会替你决定你的人生。",
+          "你能共情别人的难处，也会提醒自己不要越过边界。",
+          "你在关系里很看重分寸：靠近可以，但不能用关心绑架对方。",
+          "你的温柔有边界，所以更让人安心。"
+        );
+      }
+
+      return persona(
+        "凌晨守灯人",
+        "我不一定主动打扰谁，但如果你来了，我会把灯留着。",
+        "你的夜晚情绪是慢热的，不会立刻倾诉，却愿意陪一件事等到天亮。",
+        "你在关系里常常安静地在场，不抢话，也不轻易离开。",
+        "不用急着变得外向。能稳定地陪伴，本来就是一种很难得的能力。"
+      );
+    }
+
+    function persona(name, line, emotionMode, relationHabit, selfTicket) {
+      return {
+        name,
+        line,
+        emotionMode,
+        relationHabit,
+        selfTicket,
+        openers: [
+          "你有没有那种打了很多字又删掉的夜晚？",
+          "如果便利店能收留一句没发出去的话，你会放哪一句？",
+          "你是会说出来的人，还是先自己撑一下的人？"
+        ]
+      };
+    }
+
+    function buildMatch(personaResult) {
+      const matches = {
+        "未发送消息收藏家": {
+          name: "热牛奶型安慰者",
+          reason: "你负责把没说出口的话慢慢拿出来，TA 负责让这些话安全落地。"
+        },
+        "出口确认型观察者": {
+          name: "凌晨守灯人",
+          reason: "你需要边界和出口，TA 的稳定在场会让你不用急着解释。"
+        },
+        "天亮前递话人": {
+          name: "温柔边界感玩家",
+          reason: "你愿意推进和表达，TA 能提醒你有些心事也可以慢慢来。"
+        },
+        "热牛奶型安慰者": {
+          name: "未发送消息收藏家",
+          reason: "你擅长给出温度，TA 刚好需要一个不会催促的听众。"
+        },
+        "温柔边界感玩家": {
+          name: "天亮前递话人",
+          reason: "你守住分寸，TA 帮沉默的部分找到一句可以说出口的话。"
+        },
+        "凌晨守灯人": {
+          name: "出口确认型观察者",
+          reason: "你不急着靠近，TA 也需要一个能慢慢确认安全感的人。"
+        }
+      };
+      return matches[personaResult.name] || {
+        name: "热牛奶型安慰者",
+        reason: "你们都不急着把话说满，适合从一个很轻的问题开始聊。"
+      };
+    }
+
+    function buildSummary(top) {
+      const keys = top.map(([key]) => key);
+      if (keys.includes("warmth") && keys.includes("relation")) {
+        return "你没有急着破解便利店的规则，而是先照顾故事里的人。你的路线像一杯深夜的热牛奶：不一定高声表达，但让人知道自己没有被丢在凌晨两点。";
+      }
+      if (keys.includes("rule") && keys.includes("safety")) {
+        return "你习惯先确认边界，再靠近未知。你不是冷淡，只是希望每一步都有依据。这样的你，适合把那些打了又删的话，慢慢拆开，而不是逼自己立刻说出口。";
+      }
+      if (keys.includes("action") && keys.includes("direct")) {
+        return "你更愿意推进故事，而不是站在门口等待答案。你相信有些话越拖越重，所以宁愿在天亮前给它一个去处，哪怕只是先对自己说清楚。";
+      }
+      return "你在这间便利店里留下了一条安静但清晰的路线：先观察，再选择；先保护自己，再试着靠近别人。今晚不用急着变好，能陪一句话到天亮，也已经很不容易。";
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;"
+      }[char]));
+    }
+
+    function tagHtml(tags) {
+      return tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
+    }
+
+    function render() {
+      const app = document.getElementById("app");
+      if (state.view === "home") app.innerHTML = renderHome();
+      if (state.view === "intro") app.innerHTML = renderIntro();
+      if (state.view === "playing") app.innerHTML = renderPlaying();
+      if (state.view === "report") app.innerHTML = renderReport();
+      if (state.view === "chat") app.innerHTML = renderChat();
+      if (state.view === "logs") app.innerHTML = renderLogs();
+    }
+
+    function renderHome() {
+      return `
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Soul · 共鸣剧场 Demo</p>
+            <h1>今晚故事</h1>
+          </div>
+        </div>
+        <section class="card hero">
+          <p class="eyebrow">故事中</p>
+          <h2>${story.title}</h2>
+          <p>${story.place}</p>
+          <div class="tags">${tagHtml([...story.tendencyTags, ...story.ambianceTags])}</div>
+        </section>
+        <div class="meta">
+          <div class="meta-item"><strong>1/8</strong>起始进度</div>
+          <div class="meta-item"><strong>${story.duration}</strong>单局时长</div>
+          <div class="meta-item"><strong>${story.mode}</strong>模式</div>
+        </div>
+        <button class="btn" onclick="startStory()">进入剧场</button>
+      `;
+    }
+
+    function renderIntro() {
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('home')">返回</button>
+        </div>
+        <section class="card">
+          <p class="eyebrow">不打烊便利店</p>
+          <h1>${story.title}</h1>
+          <p>${story.intro}</p>
+          <div class="tags">${tagHtml([...story.tendencyTags, ...story.ambianceTags])}</div>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>体验目标</h3>
+          <p>从这里开始，连续完成 8 个场景。每次选择都会进入路线轨迹，并影响最终共鸣报告。结果只基于本次故事选择生成，不代表真实心理状态。</p>
+        </section>
+        <button class="btn" style="margin-top: 16px;" onclick="playStory()">开始</button>
+      `;
+    }
+
+    function renderPlaying() {
+      const scene = story.scenes[state.sceneIndex];
+      const percent = ((state.sceneIndex + 1) / story.scenes.length) * 100;
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('home')">退出</button>
+          <span class="tag">Scene ${state.sceneIndex + 1}/8</span>
+        </div>
+        <div class="progress"><span style="width: ${percent}%"></span></div>
+        <section class="scene-copy">
+          <p class="eyebrow">${story.mode}</p>
+          <h2>${scene.name}</h2>
+          ${scene.narration.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+        </section>
+        <div id="choiceArea" class="choice-list">
+          ${scene.choices.map((item) => `
+            <button class="choice" onclick="selectChoiceById('${item.id}')">${escapeHtml(item.label)}</button>
+          `).join("")}
+        </div>
+        ${renderTrack()}
+      `;
+    }
+
+    function renderFeedback(choiceItem) {
+      const choiceArea = document.getElementById("choiceArea");
+      choiceArea.innerHTML = `
+        <div class="feedback">${escapeHtml(choiceItem.feedback)}</div>
+        <button class="btn" onclick="nextScene()">${state.sceneIndex === story.scenes.length - 1 ? "查看共鸣报告" : "进入下一幕"}</button>
+      `;
+    }
+
+    function selectChoiceById(id) {
+      const scene = story.scenes[state.sceneIndex];
+      const found = scene.choices.find((item) => item.id === id);
+      if (found) selectChoice(found);
+    }
+
+    function renderTrack() {
+      return `
+        <section class="track card">
+          <h3>路线轨迹</h3>
+          ${state.route.length
+            ? `<ul class="track-list">${state.route.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+            : `<div class="empty">还没有做出选择。</div>`}
+        </section>
+      `;
+    }
+
+    function renderReport() {
+      const report = getReport();
+      const max = Math.max(...Object.values(state.scores), 1);
+      const topics = state.topics.length ? state.topics : [
+        { id: "fallback_topic", text: "你会替陌生人把一句话带到天亮前吗？", from: "通关默认" }
+      ];
+      const reportTopics = [
+        ...report.persona.openers.map((text, index) => ({ id: `persona_opener_${index}`, text, from: report.persona.name })),
+        ...topics
+      ];
+      state.reportTopics = reportTopics;
+      if (!state.topics.length) state.topics = topics;
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('home')">首页</button>
+          <span class="tag">报告展示</span>
+        </div>
+        <section class="card">
+          <p class="eyebrow">你的共鸣类型</p>
+          <h1>${escapeHtml(report.persona.name)}</h1>
+          <p>${escapeHtml(report.persona.line)}</p>
+          <div class="tags">${tagHtml(report.keywords)}</div>
+          <p style="margin-top: 14px;">${escapeHtml(report.summary)}</p>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>四组共鸣维度</h3>
+          <div class="axis-grid">
+            ${report.axes.map((axis) => `
+              <div class="axis-card">
+                <strong>${escapeHtml(axis.name)}：${escapeHtml(axis.result)}</strong>
+                ${escapeHtml(axis.detail)}
+              </div>
+            `).join("")}
+          </div>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>夜晚情绪模式</h3>
+          <p>${escapeHtml(report.persona.emotionMode)}</p>
+          <h3>你在关系里的习惯</h3>
+          <p>${escapeHtml(report.persona.relationHabit)}</p>
+          <div class="ticket">
+            <strong>今晚给自己的小票</strong><br />
+            ${escapeHtml(report.persona.selfTicket)}
+          </div>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>适合你的共鸣对象</h3>
+          <div class="axis-card">
+            <strong>${escapeHtml(report.match.name)}</strong>
+            ${escapeHtml(report.match.reason)}
+          </div>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>选择维度</h3>
+          <div class="report-score">
+            ${Object.entries(state.scores).map(([key, value]) => `
+              <div class="score-row">
+                <span>${labels[key] || key}</span>
+                <div class="score-bar"><span style="width: ${(value / max) * 100}%"></span></div>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>聊天预览</h3>
+          <p>点选一个话题，它会像真实开场白一样进入聊天。</p>
+          <div class="topic-grid">
+            ${reportTopics.slice(0, 6).map((topic) => `
+              <button class="topic-card" onclick="openTopic('${topic.id}')">
+                <strong>${escapeHtml(topic.from)}</strong><br />
+                ${escapeHtml(topic.text)}
+              </button>
+            `).join("")}
+          </div>
+        </section>
+        <button class="btn" style="margin-top: 14px;" onclick="resetDemo()">重新体验</button>
+      `;
+    }
+
+    function renderChat() {
+      const topic = state.activeTopic || state.topics[0];
+      const report = getReport();
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('report')">返回报告</button>
+          <span class="tag">聊天预览</span>
+        </div>
+        <section class="card">
+          <p class="eyebrow">模拟聊天</p>
+          <h2>还没有发送给真实用户</h2>
+          <p>本 Demo 只验证话题卡进入聊天的感觉，不对接 Soul 私信。</p>
+        </section>
+        <div class="chat">
+          <div class="bubble bot">对方类型：${escapeHtml(report.match.name)}<br />${escapeHtml(report.match.reason)}</div>
+          <div class="bubble">${escapeHtml(topic.text)}</div>
+          <div class="bubble bot">这句开场白已经进入预览。真实发话链路不在本期 Demo 范围内。</div>
+        </div>
+      `;
+    }
+
+    function renderLogs() {
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('${state.sceneIndex > 0 ? "playing" : "home"}')">返回</button>
+          <span class="tag">埋点日志</span>
+          <button class="btn small secondary" onclick="resetDemo()">重置</button>
+        </div>
+        <section class="card">
+          <h2>事件流</h2>
+          <p>用于验证：开始、节点完成、报告展示、话题打开等关键事件是否被记录。</p>
+          ${state.events.length
+            ? `<ul class="log-list">${state.events.map((item) => `
+                <li><strong>${escapeHtml(item.event)}</strong> · ${escapeHtml(item.time)}<br />${escapeHtml(JSON.stringify(item))}</li>
+              `).join("")}</ul>`
+            : `<div class="empty">还没有埋点事件。</div>`}
+        </section>
+      `;
+    }
+
+    render();
+  </script>
+</body>
+</html>
