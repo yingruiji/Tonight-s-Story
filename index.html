@@ -586,7 +586,8 @@
       route: [],
       topics: [],
       scores: {},
-      events: []
+      events: [],
+      historyId: null
     };
 
     function choice(id, label, feedback, scores, topic) {
@@ -657,6 +658,7 @@
     function nextScene() {
       if (state.sceneIndex >= story.scenes.length - 1) {
         state.view = "report";
+        saveHistoryRecord();
         log("report_show", {
           storyId: story.id,
           personalityTags: getReport().keywords.join("/"),
@@ -685,7 +687,59 @@
       state.scores = {};
       state.events = [];
       state.activeTopic = null;
+      state.historyId = null;
       render();
+    }
+
+    function getHistoryRecords() {
+      try {
+        return JSON.parse(localStorage.getItem("resonance_theater_history") || "[]");
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function setHistoryRecords(records) {
+      localStorage.setItem("resonance_theater_history", JSON.stringify(records.slice(0, 20)));
+    }
+
+    function saveHistoryRecord() {
+      const report = getReport();
+      const record = {
+        id: `record_${Date.now()}`,
+        storyTitle: story.title,
+        place: story.place,
+        completedAt: new Date().toISOString(),
+        personaName: report.persona.name,
+        personaLine: report.persona.line,
+        selfTicket: report.persona.selfTicket,
+        matchName: report.match.name,
+        matchReason: report.match.reason,
+        route: [...state.route],
+        topics: [
+          ...report.persona.openers.map((text, index) => ({ id: `history_opener_${index}`, text, from: report.persona.name })),
+          ...state.topics
+        ].slice(0, 6)
+      };
+      const records = getHistoryRecords();
+      setHistoryRecords([record, ...records]);
+      state.historyId = record.id;
+    }
+
+    function openHistory(id) {
+      state.historyId = id;
+      state.view = "historyDetail";
+      render();
+    }
+
+    function formatRecordTime(value) {
+      return new Date(value).toLocaleString("zh-CN", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
     }
 
     function getReport() {
@@ -921,6 +975,8 @@
       if (state.view === "playing") app.innerHTML = renderPlaying();
       if (state.view === "report") app.innerHTML = renderReport();
       if (state.view === "chat") app.innerHTML = renderChat();
+      if (state.view === "history") app.innerHTML = renderHistory();
+      if (state.view === "historyDetail") app.innerHTML = renderHistoryDetail();
       if (state.view === "logs") app.innerHTML = renderLogs();
     }
 
@@ -944,6 +1000,7 @@
           <div class="meta-item"><strong>${story.mode}</strong>模式</div>
         </div>
         <button class="btn" onclick="startStory()">进入剧场</button>
+        <button class="btn secondary" style="margin-top: 12px;" onclick="setView('history')">我的剧场记录</button>
       `;
     }
 
@@ -1090,6 +1147,80 @@
           </div>
         </section>
         <button class="btn" style="margin-top: 14px;" onclick="resetDemo()">重新体验</button>
+      `;
+    }
+
+    function renderHistory() {
+      const records = getHistoryRecords();
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('home')">返回</button>
+          <span class="tag">我的剧场记录</span>
+        </div>
+        <section class="card">
+          <h2>我的剧场记录</h2>
+          <p>这里保存你在这台设备上完成过的故事报告，刷新页面后也能继续查看。</p>
+          ${records.length
+            ? `<div class="topic-grid">${records.map((record) => `
+                <button class="topic-card" onclick="openHistory('${record.id}')">
+                  <strong>${escapeHtml(formatRecordTime(record.completedAt))} · ${escapeHtml(record.storyTitle)}</strong><br />
+                  共鸣类型：${escapeHtml(record.personaName)}<br />
+                  ${escapeHtml(record.selfTicket)}
+                </button>
+              `).join("")}</div>`
+            : `<div class="empty">还没有记录。完成一次故事后，这里会自动保存。</div>`}
+        </section>
+      `;
+    }
+
+    function renderHistoryDetail() {
+      const record = getHistoryRecords().find((item) => item.id === state.historyId);
+      if (!record) {
+        return `
+          <div class="topbar">
+            <button class="btn small secondary" onclick="setView('history')">返回</button>
+          </div>
+          <section class="card"><div class="empty">没有找到这条记录。</div></section>
+        `;
+      }
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('history')">返回</button>
+          <span class="tag">${escapeHtml(formatRecordTime(record.completedAt))}</span>
+        </div>
+        <section class="card">
+          <p class="eyebrow">${escapeHtml(record.place)}</p>
+          <h1>${escapeHtml(record.personaName)}</h1>
+          <p>${escapeHtml(record.personaLine)}</p>
+          <div class="ticket">
+            <strong>那晚给自己的小票</strong><br />
+            ${escapeHtml(record.selfTicket)}
+          </div>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>当时的路线</h3>
+          <ul class="track-list">
+            ${record.route.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ul>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>当时适合你的共鸣对象</h3>
+          <div class="axis-card">
+            <strong>${escapeHtml(record.matchName)}</strong>
+            ${escapeHtml(record.matchReason)}
+          </div>
+        </section>
+        <section class="card" style="margin-top: 14px;">
+          <h3>当时生成的话题</h3>
+          <div class="topic-grid">
+            ${record.topics.map((topic) => `
+              <div class="topic-card">
+                <strong>${escapeHtml(topic.from)}</strong><br />
+                ${escapeHtml(topic.text)}
+              </div>
+            `).join("")}
+          </div>
+        </section>
       `;
     }
 
