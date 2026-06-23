@@ -286,6 +286,116 @@
       margin-top: 18px;
     }
 
+    .route-nodes {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      overflow-x: auto;
+      margin-top: 12px;
+      padding: 18px 4px 6px;
+      scrollbar-width: none;
+    }
+
+    .route-nodes::-webkit-scrollbar {
+      display: none;
+    }
+
+    .route-nodes::before {
+      position: absolute;
+      top: 31px;
+      right: 16px;
+      left: 16px;
+      height: 2px;
+      content: "";
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, rgba(255, 208, 138, 0.18), rgba(127, 199, 255, 0.62), rgba(255, 208, 138, 0.18));
+      background-size: 200% 100%;
+      animation: routeGlow 4s linear infinite;
+    }
+
+    .route-node {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      min-width: 84px;
+      justify-items: center;
+      gap: 8px;
+    }
+
+    .route-dot {
+      position: relative;
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 2px solid rgba(255, 208, 138, 0.72);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 32%, rgba(255, 255, 255, 0.95), rgba(255, 208, 138, 0.7) 38%, rgba(18, 22, 33, 0.96) 70%);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      box-shadow: 0 0 18px rgba(255, 208, 138, 0.22);
+    }
+
+    .route-dot.current {
+      border-color: rgba(127, 199, 255, 0.92);
+      color: var(--accent-2);
+      animation: routePulse 1.8s ease-in-out infinite;
+      box-shadow: 0 0 0 4px rgba(127, 199, 255, 0.1), 0 0 24px rgba(127, 199, 255, 0.35);
+    }
+
+    .route-body {
+      width: 100%;
+      padding: 8px 8px 9px;
+      border: 0;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.055);
+      text-align: center;
+    }
+
+    .route-body strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .route-body span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .route-summary {
+      display: block;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #d7ccb9;
+      text-align: left;
+    }
+
+    @keyframes routeGlow {
+      from {
+        background-position: 0% 0;
+      }
+      to {
+        background-position: 200% 0;
+      }
+    }
+
+    @keyframes routePulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.08);
+      }
+    }
+
     .track-list, .log-list {
       display: grid;
       gap: 8px;
@@ -350,6 +460,40 @@
       margin-bottom: 5px;
       color: var(--accent);
       font-size: 13px;
+    }
+
+    .axis-title {
+      display: flex;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .axis-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .axis-track {
+      position: relative;
+      height: 8px;
+      margin: 10px 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 208, 138, 0.72), rgba(127, 199, 255, 0.72));
+    }
+
+    .axis-dot {
+      position: absolute;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      border: 3px solid #10141f;
+      border-radius: 50%;
+      background: #fff2cf;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18);
+      transform: translate(-50%, -50%);
     }
 
     .ticket {
@@ -587,7 +731,8 @@
       topics: [],
       scores: {},
       events: [],
-      historyId: null
+      historyId: null,
+      expandedRouteIndex: null
     };
 
     function choice(id, label, feedback, scores, topic) {
@@ -634,7 +779,11 @@
     function selectChoice(choiceItem) {
       const scene = story.scenes[state.sceneIndex];
       state.choices.push(choiceItem.id);
-      state.route.push(`${state.sceneIndex + 1}. ${scene.name}：${choiceItem.label}`);
+      state.route.push({
+        index: state.sceneIndex + 1,
+        sceneName: scene.name,
+        choiceLabel: choiceItem.label
+      });
       addScores(choiceItem.scores);
       log("scene_complete", {
         storyId: story.id,
@@ -688,12 +837,19 @@
       state.events = [];
       state.activeTopic = null;
       state.historyId = null;
+      state.expandedRouteIndex = null;
+      render();
+    }
+
+    function toggleRouteNode(index) {
+      state.expandedRouteIndex = state.expandedRouteIndex === index ? null : index;
       render();
     }
 
     function getHistoryRecords() {
       try {
-        return JSON.parse(localStorage.getItem("resonance_theater_history") || "[]");
+        return JSON.parse(localStorage.getItem("resonance_theater_history") || "[]")
+          .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
       } catch (error) {
         return [];
       }
@@ -740,6 +896,57 @@
         minute: "2-digit",
         hour12: false
       });
+    }
+
+    function formatRouteChoice(item) {
+      if (typeof item === "object" && item) {
+        return `${item.index}. ${item.sceneName}：你选择了「${item.choiceLabel}」`;
+      }
+      if (item.includes("你选择了")) return item;
+      const parts = item.split("：");
+      if (parts.length < 2) return item;
+      const scene = parts.shift();
+      const choiceText = parts.join("：");
+      return `${scene}：你选择了「${choiceText}」`;
+    }
+
+    function renderRouteNodes(route, currentSceneIndex = null) {
+      const nodes = route.map((item) => {
+        if (typeof item === "object" && item) return item;
+        const formatted = formatRouteChoice(item);
+        const match = formatted.match(/^(\d+)\. ([^：]+)：你选择了「(.+)」$/);
+        if (!match) return { index: "", sceneName: "已完成剧情", choiceLabel: formatted };
+        return { index: match[1], sceneName: match[2], choiceLabel: match[3] };
+      });
+      if (currentSceneIndex !== null) {
+        const scene = story.scenes[currentSceneIndex];
+        nodes.push({
+          index: currentSceneIndex + 1,
+          sceneName: scene.name,
+          choiceLabel: "当前剧情"
+        });
+      }
+      return `
+        <div class="route-nodes">
+          ${nodes.map((node) => {
+            const isCurrent = node.choiceLabel === "当前剧情";
+            const nodeIndex = Number(node.index);
+            const scene = story.scenes[nodeIndex - 1];
+            const summary = scene ? scene.narration.slice(0, 2).join(" ") : "";
+            const expanded = state.expandedRouteIndex === nodeIndex;
+            return `
+              <div class="route-node">
+                <div class="route-dot ${isCurrent ? "current" : ""}">${isCurrent ? "◎" : node.index}</div>
+                <button class="route-body" onclick="toggleRouteNode(${nodeIndex})">
+                  <strong>${escapeHtml(node.sceneName)}</strong>
+                  <span>${escapeHtml(isCurrent ? "当前剧情" : "已走过")}</span>
+                  ${expanded && summary ? `<span class="route-summary">${escapeHtml(summary)}</span>` : ""}
+                </button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
     }
 
     function getReport() {
@@ -798,33 +1005,26 @@
     }
 
     function buildAxes() {
-      const approachPeople = scoreOf("relation") >= scoreOf("rule");
-      const expressionDirect = scoreOf("direct") >= scoreOf("reserved");
-      const safetyControl = scoreOf("safety") >= scoreOf("action");
-      const repairDeliver = scoreOf("direct") + scoreOf("action") >= scoreOf("warmth") + scoreOf("reserved");
-
       return [
-        {
-          name: "靠近方式",
-          result: approachPeople ? "先靠近人" : "先确认规则",
-          detail: approachPeople ? "你会先看对方是不是想有人陪一下。" : "你会先弄清边界，再决定要不要靠近。"
-        },
-        {
-          name: "表达方式",
-          result: expressionDirect ? "把话说出" : "先留在心里",
-          detail: expressionDirect ? "你倾向把关键的话放到台面上。" : "你更习惯先消化情绪，再决定要不要说。"
-        },
-        {
-          name: "安全感来源",
-          result: safetyControl ? "确认出口" : "先迈一步",
-          detail: safetyControl ? "未知里，你需要知道自己随时可以退回去。" : "未知里，你会边走边找答案。"
-        },
-        {
-          name: "修复方式",
-          result: repairDeliver ? "把话送达" : "允许放下",
-          detail: repairDeliver ? "你相信有些话说出口后，心事才有落点。" : "你相信不是每句话都要被追问到底。"
-        }
+        buildAxis("靠近方式", "先靠近人", scoreOf("relation"), "先确认规则", scoreOf("rule"), "你会先看对方是不是想有人陪一下。", "你会先弄清边界，再决定要不要靠近。"),
+        buildAxis("表达方式", "把话说出", scoreOf("direct"), "先留在心里", scoreOf("reserved"), "你倾向把关键的话放到台面上。", "你更习惯先消化情绪，再决定要不要说。"),
+        buildAxis("安全感来源", "确认出口", scoreOf("safety"), "先迈一步", scoreOf("action"), "未知里，你需要知道自己随时可以退回去。", "未知里，你会边走边找答案。"),
+        buildAxis("修复方式", "把话送达", scoreOf("direct") + scoreOf("action"), "允许放下", scoreOf("warmth") + scoreOf("reserved"), "你相信有些话说出口后，心事才有落点。", "你相信不是每句话都要被追问到底。")
       ];
+    }
+
+    function buildAxis(name, leftLabel, leftScore, rightLabel, rightScore, leftDetail, rightDetail) {
+      const total = leftScore + rightScore || 1;
+      const position = Math.max(12, Math.min(88, 50 + ((rightScore - leftScore) / total) * 38));
+      const leansLeft = leftScore >= rightScore;
+      return {
+        name,
+        leftLabel,
+        rightLabel,
+        result: leansLeft ? leftLabel : rightLabel,
+        detail: leansLeft ? leftDetail : rightDetail,
+        position: Math.round(position)
+      };
     }
 
     function buildPersona(top) {
@@ -974,6 +1174,7 @@
       if (state.view === "intro") app.innerHTML = renderIntro();
       if (state.view === "playing") app.innerHTML = renderPlaying();
       if (state.view === "report") app.innerHTML = renderReport();
+      if (state.view === "route") app.innerHTML = renderRouteDetail();
       if (state.view === "chat") app.innerHTML = renderChat();
       if (state.view === "history") app.innerHTML = renderHistory();
       if (state.view === "historyDetail") app.innerHTML = renderHistoryDetail();
@@ -1016,8 +1217,12 @@
           <div class="tags">${tagHtml([...story.tendencyTags, ...story.ambianceTags])}</div>
         </section>
         <section class="card" style="margin-top: 14px;">
+          <h3>前期提要</h3>
+          <p>这家便利店只在一些睡不着的夜里出现。它不卖东西，只收留那些打了又删、没来得及发出去的话。今晚，小票机把其中一句交到了你手里。</p>
+        </section>
+        <section class="card" style="margin-top: 14px;">
           <h3>体验目标</h3>
-          <p>从这里开始，连续完成 8 个场景。每次选择都会进入路线轨迹，并影响最终共鸣报告。结果只基于本次故事选择生成，不代表真实心理状态。</p>
+          <p>从这里开始，连续完成 8 个场景。每次选择都会记录到本次路线，并影响最终共鸣报告。结果只基于本次故事选择生成，不代表真实心理状态。</p>
         </section>
         <button class="btn" style="margin-top: 16px;" onclick="playStory()">开始</button>
       `;
@@ -1037,12 +1242,12 @@
           <h2>${scene.name}</h2>
           ${scene.narration.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
         </section>
-        <div id="choiceArea" class="choice-list">
+        <div id="choiceArea" class="choice-list" autocomplete="off" data-recommendations="off">
           ${scene.choices.map((item) => `
-            <button class="choice" onclick="selectChoiceById('${item.id}')">${escapeHtml(item.label)}</button>
+            <button class="choice" type="button" autocomplete="off" onclick="selectChoiceById('${item.id}')">${escapeHtml(item.label)}</button>
           `).join("")}
         </div>
-        ${renderTrack()}
+        ${state.route.length ? renderTrack() : ""}
       `;
     }
 
@@ -1063,10 +1268,9 @@
     function renderTrack() {
       return `
         <section class="track card">
-          <h3>路线轨迹</h3>
-          ${state.route.length
-            ? `<ul class="track-list">${state.route.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
-            : `<div class="empty">还没有做出选择。</div>`}
+          <h3>你走过的夜路</h3>
+          <p>小灯会记住你经过的每一幕，点一下可以回看片段。</p>
+          ${renderRouteNodes(state.route, state.sceneIndex)}
         </section>
       `;
     }
@@ -1094,14 +1298,24 @@
           <p>${escapeHtml(report.persona.line)}</p>
           <div class="tags">${tagHtml(report.keywords)}</div>
           <p style="margin-top: 14px;">${escapeHtml(report.summary)}</p>
+          <button class="btn secondary" style="margin-top: 12px;" onclick="setView('route')">查看本次路线</button>
         </section>
         <section class="card" style="margin-top: 14px;">
           <h3>四组共鸣维度</h3>
           <div class="axis-grid">
             ${report.axes.map((axis) => `
               <div class="axis-card">
-                <strong>${escapeHtml(axis.name)}：${escapeHtml(axis.result)}</strong>
-                ${escapeHtml(axis.detail)}
+                <div class="axis-title">
+                  <strong>${escapeHtml(axis.name)}</strong>
+                </div>
+                <div class="axis-labels">
+                  <span>${escapeHtml(axis.leftLabel)}</span>
+                  <span>${escapeHtml(axis.rightLabel)}</span>
+                </div>
+                <div class="axis-track">
+                  <span class="axis-dot" style="left: ${axis.position}%"></span>
+                </div>
+                <p>${escapeHtml(axis.detail)}</p>
               </div>
             `).join("")}
           </div>
@@ -1136,17 +1350,32 @@
         </section>
         <section class="card" style="margin-top: 14px;">
           <h3>聊天预览</h3>
-          <p>点选一个话题，它会像真实开场白一样进入聊天。</p>
+          <p>挑一句开场白，发给「${escapeHtml(report.match.name)}」试试。</p>
           <div class="topic-grid">
-            ${reportTopics.slice(0, 6).map((topic) => `
+            ${reportTopics.slice(0, 3).map((topic) => `
               <button class="topic-card" onclick="openTopic('${topic.id}')">
-                <strong>${escapeHtml(topic.from)}</strong><br />
                 ${escapeHtml(topic.text)}
               </button>
             `).join("")}
           </div>
         </section>
         <button class="btn" style="margin-top: 14px;" onclick="resetDemo()">重新体验</button>
+      `;
+    }
+
+    function renderRouteDetail() {
+      return `
+        <div class="topbar">
+          <button class="btn small secondary" onclick="setView('report')">返回报告</button>
+          <span class="tag">本次路线</span>
+        </div>
+        <section class="card">
+          <h2>这次你怎么选的</h2>
+          <p>这里可以回看自己走过的路线。</p>
+          ${state.route.length
+            ? renderRouteNodes(state.route)
+            : `<div class="empty">还没有路线记录。</div>`}
+        </section>
       `;
     }
 
@@ -1159,7 +1388,7 @@
         </div>
         <section class="card">
           <h2>我的剧场记录</h2>
-          <p>这里保存你在这台设备上完成过的故事报告，刷新页面后也能继续查看。</p>
+          <p>这里保存你完成过的故事报告。</p>
           ${records.length
             ? `<div class="topic-grid">${records.map((record) => `
                 <button class="topic-card" onclick="openHistory('${record.id}')">
@@ -1199,26 +1428,13 @@
         </section>
         <section class="card" style="margin-top: 14px;">
           <h3>当时的路线</h3>
-          <ul class="track-list">
-            ${record.route.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
-          </ul>
+          ${renderRouteNodes(record.route || [])}
         </section>
         <section class="card" style="margin-top: 14px;">
           <h3>当时适合你的共鸣对象</h3>
           <div class="axis-card">
             <strong>${escapeHtml(record.matchName)}</strong>
             ${escapeHtml(record.matchReason)}
-          </div>
-        </section>
-        <section class="card" style="margin-top: 14px;">
-          <h3>当时生成的话题</h3>
-          <div class="topic-grid">
-            ${record.topics.map((topic) => `
-              <div class="topic-card">
-                <strong>${escapeHtml(topic.from)}</strong><br />
-                ${escapeHtml(topic.text)}
-              </div>
-            `).join("")}
           </div>
         </section>
       `;
@@ -1235,12 +1451,12 @@
         <section class="card">
           <p class="eyebrow">模拟聊天</p>
           <h2>还没有发送给真实用户</h2>
-          <p>本 Demo 只验证话题卡进入聊天的感觉，不对接 Soul 私信。</p>
+          <p>本 Demo 只验证话题卡进入聊天的情况，后续可接通私信。</p>
         </section>
         <div class="chat">
           <div class="bubble bot">对方类型：${escapeHtml(report.match.name)}<br />${escapeHtml(report.match.reason)}</div>
           <div class="bubble">${escapeHtml(topic.text)}</div>
-          <div class="bubble bot">这句开场白已经进入预览。真实发话链路不在本期 Demo 范围内。</div>
+          <div class="bubble bot">这句开场白已经进入预览。真实链路不在本期 Demo 范围内。</div>
         </div>
       `;
     }
